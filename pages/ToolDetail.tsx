@@ -109,7 +109,7 @@ const ToolDetail: React.FC = () => {
           };
           break;
         case 'net-usage':
-          if (!require(['activity', 'hours'])) { alert('Select activity and hours'); return; }
+          if (!inputs.activity || !inputs.hours || isNaN(inputs.hours)) { alert('Select activity and enter hours'); return; }
           const gbMap: any = { 'HD Streaming': 3, 'Browsing': 0.2, 'Gaming': 0.05, 'Social Media': 0.5 };
           const daily = (gbMap[inputs.activity] || 1) * inputs.hours;
           res = { 
