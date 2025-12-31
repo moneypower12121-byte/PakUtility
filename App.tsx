@@ -6,6 +6,9 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import ToolDetail from './pages/ToolDetail';
 import LegalPage from './pages/LegalPage';
+import AgeCalculator from './pages/AgeCalculator';
+import BMICalculator from './pages/BMICalculator';
+import PercentageCalculator from './pages/PercentageCalculator';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -31,6 +34,11 @@ const App: React.FC = () => {
             <Route path="/disclaimer" element={<LegalPage title="Disclaimer" />} />
             <Route path="/about-us" element={<LegalPage title="About Us" />} />
             <Route path="/contact-us" element={<LegalPage title="Contact Us" />} />
+
+            {/* Dedicated Calculator Routes */}
+            <Route path="/age-calculator" element={<AgeCalculator />} />
+            <Route path="/bmi-calculator" element={<BMICalculator />} />
+            <Route path="/percentage-calculator" element={<PercentageCalculator />} />
 
             {/* Catch-all Dynamic Tool Route */}
             <Route path="/:slug" element={<ToolDetail />} />
