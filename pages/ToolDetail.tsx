@@ -1440,6 +1440,362 @@ const ToolDetail: React.FC = () => {
     );
   };
 
+  // --- ENGINE: Daily Life ---
+  const DailyLifeEngine = () => {
+    const [inputs, setInputs] = useState<any>({});
+
+    const calc = () => {
+      let res: any = {};
+
+      switch (tool.id) {
+        case 'age-calc': {
+          const dob = inputs.dob;
+          if (!dob) { alert('Enter date of birth'); return; }
+          const today = new Date();
+          const birth = new Date(dob);
+          let years = today.getFullYear() - birth.getFullYear();
+          let months = today.getMonth() - birth.getMonth();
+          let days = today.getDate() - birth.getDate();
+          
+          if (days < 0) {
+            months--;
+            days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+          }
+          if (months < 0) {
+            years--;
+            months += 12;
+          }
+          
+          res = {
+            dateOfBirth: dob,
+            age: `${years} years, ${months} months, ${days} days`,
+            totalDays: Math.floor((today.getTime() - birth.getTime()) / (1000 * 60 * 60 * 24)),
+            msg: 'Exact age calculation based on your birth date'
+          };
+          break;
+        }
+
+        case 'date-diff': {
+          const date1 = new Date(inputs.date1);
+          const date2 = new Date(inputs.date2);
+          if (!inputs.date1 || !inputs.date2) { alert('Enter both dates'); return; }
+          const diff = Math.abs((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24));
+          const weeks = Math.floor(diff / 7);
+          const days = Math.floor(diff % 7);
+          res = {
+            fromDate: inputs.date1,
+            toDate: inputs.date2,
+            totalDays: Math.floor(diff),
+            weeks: weeks,
+            remainingDays: days,
+            msg: 'Exact difference between two dates'
+          };
+          break;
+        }
+
+        case 'time-duration': {
+          const time1 = inputs.time1;
+          const time2 = inputs.time2;
+          if (!time1 || !time2) { alert('Enter both times'); return; }
+          const [h1, m1] = time1.split(':').map(Number);
+          const [h2, m2] = time2.split(':').map(Number);
+          let totalMin = (h2 * 60 + m2) - (h1 * 60 + m1);
+          if (totalMin < 0) totalMin += 24 * 60;
+          const hours = Math.floor(totalMin / 60);
+          const mins = totalMin % 60;
+          res = {
+            startTime: time1,
+            endTime: time2,
+            duration: `${hours} hours ${mins} minutes`,
+            totalMinutes: totalMin,
+            msg: 'Time duration calculator'
+          };
+          break;
+        }
+
+        case 'perc-calc': {
+          const value = Number(inputs.value);
+          const percent = Number(inputs.percent);
+          const type = inputs.type || 'of';
+          if (!value || !percent) { alert('Enter value and percentage'); return; }
+          
+          let result = 0;
+          let description = '';
+          
+          if (type === 'of') {
+            result = (value * percent) / 100;
+            description = `${percent}% of ${value}`;
+          } else if (type === 'increase') {
+            result = value + (value * percent) / 100;
+            description = `${value} increased by ${percent}%`;
+          } else if (type === 'decrease') {
+            result = value - (value * percent) / 100;
+            description = `${value} decreased by ${percent}%`;
+          }
+          
+          res = {
+            calculation: description,
+            result: result.toFixed(2),
+            msg: 'Percentage calculation result'
+          };
+          break;
+        }
+
+        case 'discount-calc': {
+          const originalPrice = Number(inputs.originalPrice);
+          const discountPercent = Number(inputs.discountPercent);
+          if (!originalPrice || !discountPercent) { alert('Enter original price and discount %'); return; }
+          
+          const discountAmount = (originalPrice * discountPercent) / 100;
+          const salePrice = originalPrice - discountAmount;
+          const savings = discountAmount;
+          
+          res = {
+            originalPrice: `Rs. ${originalPrice.toLocaleString()}`,
+            discountPercent: `${discountPercent}%`,
+            discountAmount: `Rs. ${discountAmount.toFixed(0).toLocaleString()}`,
+            salePrice: `Rs. ${salePrice.toFixed(0).toLocaleString()}`,
+            youSave: `Rs. ${savings.toFixed(0).toLocaleString()}`,
+            msg: 'Sale price after discount'
+          };
+          break;
+        }
+
+        case 'tip-calc': {
+          const billAmount = Number(inputs.billAmount);
+          const tipPercent = Number(inputs.tipPercent) || 15;
+          if (!billAmount) { alert('Enter bill amount'); return; }
+          
+          const tipAmount = (billAmount * tipPercent) / 100;
+          const totalWithTip = billAmount + tipAmount;
+          const perPerson = inputs.persons ? totalWithTip / Number(inputs.persons) : 0;
+          
+          res = {
+            billAmount: `Rs. ${billAmount.toLocaleString()}`,
+            tipPercent: `${tipPercent}%`,
+            tipAmount: `Rs. ${tipAmount.toFixed(0).toLocaleString()}`,
+            totalWithTip: `Rs. ${totalWithTip.toFixed(0).toLocaleString()}`,
+            perPerson: inputs.persons ? `Rs. ${perPerson.toFixed(0).toLocaleString()}` : 'N/A',
+            msg: 'Service tip calculation'
+          };
+          break;
+        }
+
+        case 'loan-calc': {
+          const principal = Number(inputs.principal);
+          const ratePerYear = Number(inputs.ratePerYear);
+          const years = Number(inputs.years);
+          if (!principal || !ratePerYear || !years) { alert('Enter principal, rate, and years'); return; }
+          
+          const totalInterest = (principal * ratePerYear * years) / 100;
+          const totalAmount = principal + totalInterest;
+          const monthlyPayment = totalAmount / (years * 12);
+          
+          res = {
+            principal: `Rs. ${principal.toLocaleString()}`,
+            ratePerYear: `${ratePerYear}%`,
+            tenure: `${years} years`,
+            totalInterest: `Rs. ${totalInterest.toFixed(0).toLocaleString()}`,
+            totalAmount: `Rs. ${totalAmount.toFixed(0).toLocaleString()}`,
+            monthlyPayment: `Rs. ${monthlyPayment.toFixed(0).toLocaleString()}`,
+            msg: 'Simple interest loan calculation'
+          };
+          break;
+        }
+
+        case 'emi-calc': {
+          const principal = Number(inputs.principal);
+          const ratePerYear = Number(inputs.ratePerYear);
+          const months = Number(inputs.months);
+          if (!principal || !ratePerYear || !months) { alert('Enter amount, rate, and months'); return; }
+          
+          const ratePerMonth = ratePerYear / 12 / 100;
+          const emi = (principal * ratePerMonth * Math.pow(1 + ratePerMonth, months)) / (Math.pow(1 + ratePerMonth, months) - 1);
+          const totalPayable = emi * months;
+          const totalInterest = totalPayable - principal;
+          
+          res = {
+            principal: `Rs. ${principal.toLocaleString()}`,
+            ratePerYear: `${ratePerYear}%`,
+            tenure: `${months} months (${(months / 12).toFixed(1)} years)`,
+            monthlyEMI: `Rs. ${emi.toFixed(0).toLocaleString()}`,
+            totalPayable: `Rs. ${totalPayable.toFixed(0).toLocaleString()}`,
+            totalInterest: `Rs. ${totalInterest.toFixed(0).toLocaleString()}`,
+            msg: 'Reducing balance EMI calculation'
+          };
+          break;
+        }
+
+        case 'bmi-calc': {
+          const weight = Number(inputs.weight);
+          const height = Number(inputs.height);
+          const unit = inputs.unit || 'kg';
+          
+          if (!weight || !height) { alert('Enter weight and height'); return; }
+          
+          let bmi = 0;
+          if (unit === 'kg') {
+            const heightM = height / 100;
+            bmi = weight / (heightM * heightM);
+          } else {
+            bmi = (weight / (height * height)) * 703;
+          }
+          
+          let category = '';
+          if (bmi < 18.5) category = 'Underweight';
+          else if (bmi < 25) category = 'Normal Weight';
+          else if (bmi < 30) category = 'Overweight';
+          else category = 'Obese';
+          
+          res = {
+            weight: `${weight} ${unit}`,
+            height: `${height} ${unit === 'kg' ? 'cm' : 'inches'}`,
+            bmi: bmi.toFixed(1),
+            category: category,
+            msg: 'BMI is an indicator of body composition; consult doctor for health advice'
+          };
+          break;
+        }
+
+        case 'cal-calc': {
+          const age = Number(inputs.age);
+          const gender = inputs.gender || 'male';
+          const weight = Number(inputs.weight);
+          const height = Number(inputs.height);
+          const activity = Number(inputs.activity) || 1.5;
+          
+          if (!age || !weight || !height) { alert('Enter age, weight, and height'); return; }
+          
+          let bmr = 0;
+          if (gender === 'male') {
+            bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+          } else {
+            bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+          }
+          
+          const tdee = bmr * activity;
+          const deficitCal = tdee - 500;
+          const surplusCal = tdee + 500;
+          
+          res = {
+            age: age,
+            gender: gender.toUpperCase(),
+            weight: `${weight} kg`,
+            height: `${height} cm`,
+            bmr: `${bmr.toFixed(0)} Cal/day`,
+            tdee: `${tdee.toFixed(0)} Cal/day`,
+            deficit500: `${deficitCal.toFixed(0)} Cal/day (Weight Loss)`,
+            surplus500: `${surplusCal.toFixed(0)} Cal/day (Weight Gain)`,
+            msg: 'Estimate based on Harris-Benedict equation; individual needs vary'
+          };
+          break;
+        }
+
+        default:
+          res = { msg: 'Calculation not available' };
+      }
+
+      setResult(res);
+    };
+
+    return (
+      <div className="space-y-4">
+        {tool.id === 'age-calc' && (
+          <input type="date" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, dob: e.target.value })} />
+        )}
+
+        {tool.id === 'date-diff' && (
+          <>
+            <input type="date" placeholder="Start Date" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, date1: e.target.value })} />
+            <input type="date" placeholder="End Date" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, date2: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'time-duration' && (
+          <>
+            <input type="time" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, time1: e.target.value })} />
+            <input type="time" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, time2: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'perc-calc' && (
+          <>
+            <input type="number" placeholder="Value" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
+            <input type="number" placeholder="Percentage (%)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, percent: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, type: e.target.value })} defaultValue="of">
+              <option value="of">% of Value</option>
+              <option value="increase">Increase by %</option>
+              <option value="decrease">Decrease by %</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'discount-calc' && (
+          <>
+            <input type="number" placeholder="Original Price (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, originalPrice: e.target.value })} />
+            <input type="number" placeholder="Discount (%)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, discountPercent: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'tip-calc' && (
+          <>
+            <input type="number" placeholder="Bill Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, billAmount: e.target.value })} />
+            <input type="number" placeholder="Tip (%)" className="w-full border p-4 rounded-xl" defaultValue={15} onChange={e => setInputs({ ...inputs, tipPercent: e.target.value })} />
+            <input type="number" placeholder="Number of People (Optional)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, persons: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'loan-calc' && (
+          <>
+            <input type="number" placeholder="Principal Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, principal: e.target.value })} />
+            <input type="number" placeholder="Rate per Year (%)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, ratePerYear: e.target.value })} />
+            <input type="number" placeholder="Tenure (Years)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, years: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'emi-calc' && (
+          <>
+            <input type="number" placeholder="Loan Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, principal: e.target.value })} />
+            <input type="number" placeholder="Rate per Year (%)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, ratePerYear: e.target.value })} />
+            <input type="number" placeholder="Tenure (Months)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, months: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'bmi-calc' && (
+          <>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, unit: e.target.value })} defaultValue="kg">
+              <option value="kg">Kilogram (kg) / Centimeter (cm)</option>
+              <option value="lbs">Pounds (lbs) / Inches (in)</option>
+            </select>
+            <input type="number" placeholder={inputs.unit === 'kg' ? "Weight (kg)" : "Weight (lbs)"} className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, weight: e.target.value })} />
+            <input type="number" placeholder={inputs.unit === 'kg' ? "Height (cm)" : "Height (inches)"} className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, height: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'cal-calc' && (
+          <>
+            <input type="number" placeholder="Age (years)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, age: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, gender: e.target.value })} defaultValue="male">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+            <input type="number" placeholder="Weight (kg)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, weight: e.target.value })} />
+            <input type="number" placeholder="Height (cm)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, height: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, activity: e.target.value })} defaultValue={1.5}>
+              <option value={1.2}>Sedentary (Little activity)</option>
+              <option value={1.375}>Lightly Active (1-3 days/week)</option>
+              <option value={1.55}>Moderately Active (3-5 days/week)</option>
+              <option value={1.725}>Very Active (6-7 days/week)</option>
+              <option value={1.9}>Extremely Active (Physical job/training)</option>
+            </select>
+          </>
+        )}
+
+        <button onClick={calc} className="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold hover:bg-emerald-800 transition">Calculate</button>
+      </div>
+    );
+  };
+
   const renderInstructions = () => {
     const defaultSteps = ["Enter the required numerical value.", "Press the calculate/convert button.", "View the results in the box below."];
     const instructionsMap: Record<string, string[]> = {
@@ -1489,6 +1845,7 @@ const ToolDetail: React.FC = () => {
     if (tool.category === 'Tax & Finance') return <TaxFinanceEngine />;
     if (tool.category === 'Identity & Personal') return <IdentityEngine />;
     if (tool.category === 'Vehicle Tools') return <VehicleEngine />;
+    if (tool.category === 'Daily Life') return <DailyLifeEngine />;
 
     return (
       <div className="text-center p-8 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
