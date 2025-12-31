@@ -3057,74 +3057,87 @@ const ToolDetail: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="text-[10px] uppercase font-bold text-gray-400 mb-4 flex space-x-2 tracking-widest">
-        <Link to="/" className="hover:text-emerald-600 transition">Home</Link>
-        <span>/</span>
-        <span className="text-emerald-800">{tool.category}</span>
-        <span>/</span>
-        <span className="text-gray-300">{tool.name}</span>
+    <div className="relative flex justify-center w-full">
+      {/* Left Banner Ad (hidden on small screens) */}
+      <div className="hidden lg:flex flex-col items-center justify-start mr-4">
+        <AdPlaceholder slot="left-banner" className="w-[160px] h-[600px] min-w-[160px] min-h-[600px]" />
       </div>
 
-      <div className="bg-white p-6 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-50 rounded-full blur-3xl opacity-50 -z-10"></div>
-        
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-10">
-          <div className="flex items-center space-x-5">
-            <div className="text-5xl bg-emerald-50 w-24 h-24 flex items-center justify-center rounded-[2rem] shadow-sm border border-emerald-100">
-              {tool.icon}
-            </div>
-            <div>
-              <h1 className="text-3xl md:text-4xl font-black text-gray-900 leading-none">{tool.name}</h1>
-              <p className="text-gray-400 mt-2 font-medium">{tool.description}</p>
-            </div>
-          </div>
-          <div className="mt-4 md:mt-0">
-             <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-4 py-2 rounded-full uppercase tracking-tighter">Updated 2024 Slabs</span>
-          </div>
+      {/* Main Content */}
+      <div className="max-w-4xl w-full">
+        <div className="text-[10px] uppercase font-bold text-gray-400 mb-4 flex space-x-2 tracking-widest">
+          <Link to="/" className="hover:text-emerald-600 transition">Home</Link>
+          <span>/</span>
+          <span className="text-emerald-800">{tool.category}</span>
+          <span>/</span>
+          <span className="text-gray-300">{tool.name}</span>
         </div>
 
-        <AdPlaceholder slot="top-tool" />
+        <div className="bg-white p-6 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
+          <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-50 rounded-full blur-3xl opacity-50 -z-10"></div>
 
-        <div className="py-10 border-y border-gray-100">
-          {renderLogic()}
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-10">
+            <div className="flex items-center space-x-5">
+              <div className="text-5xl bg-emerald-50 w-24 h-24 flex items-center justify-center rounded-[2rem] shadow-sm border border-emerald-100">
+                {tool.icon}
+              </div>
+              <div>
+                <h1 className="text-3xl md:text-4xl font-black text-gray-900 leading-none">{tool.name}</h1>
+                <p className="text-gray-400 mt-2 font-medium">{tool.description}</p>
+              </div>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-4 py-2 rounded-full uppercase tracking-tighter">Updated 2024 Slabs</span>
+            </div>
+          </div>
 
-          {result && (
-            <div className="mt-10 p-8 bg-emerald-900 text-white rounded-[2rem] shadow-2xl animate-in zoom-in duration-500">
-              <div className="flex items-center justify-between mb-6">
-                <h4 className="text-xs font-bold uppercase tracking-widest text-emerald-300">Estimation Report</h4>
-                <div className="flex space-x-2">
-                  <button onClick={() => window.print()} className="text-[10px] bg-emerald-800 px-3 py-1 rounded-md hover:bg-emerald-700">PDF</button>
-                  <button onClick={() => {
-                    navigator.clipboard.writeText(JSON.stringify(result));
-                    alert("Results copied!");
-                  }} className="text-[10px] bg-emerald-800 px-3 py-1 rounded-md hover:bg-emerald-700">Copy</button>
+          <AdPlaceholder slot="top-tool" />
+
+          <div className="py-10 border-y border-gray-100">
+            {renderLogic()}
+
+            {result && (
+              <div className="mt-10 p-8 bg-emerald-900 text-white rounded-[2rem] shadow-2xl animate-in zoom-in duration-500">
+                <div className="flex items-center justify-between mb-6">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-emerald-300">Estimation Report</h4>
+                  <div className="flex space-x-2">
+                    <button onClick={() => window.print()} className="text-[10px] bg-emerald-800 px-3 py-1 rounded-md hover:bg-emerald-700">PDF</button>
+                    <button onClick={() => {
+                      navigator.clipboard.writeText(JSON.stringify(result));
+                      alert("Results copied!");
+                    }} className="text-[10px] bg-emerald-800 px-3 py-1 rounded-md hover:bg-emerald-700">Copy</button>
+                  </div>
                 </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {Object.entries(result).map(([key, value]: any) => (
+                    key !== 'msg' && (
+                      <div key={key} className="bg-white/10 p-5 rounded-2xl border border-white/5 backdrop-blur-sm">
+                        <p className="text-[10px] text-emerald-200 font-bold uppercase mb-1">{key.replace(/([A-Z])/g, ' $1')}</p>
+                        <p className="text-3xl font-black">{value}</p>
+                      </div>
+                    )
+                  ))}
+                </div>
+                {result.msg && <p className="mt-6 text-sm text-emerald-100/70 italic border-t border-white/5 pt-4">💡 {result.msg}</p>}
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {Object.entries(result).map(([key, value]: any) => (
-                  key !== 'msg' && (
-                    <div key={key} className="bg-white/10 p-5 rounded-2xl border border-white/5 backdrop-blur-sm">
-                      <p className="text-[10px] text-emerald-200 font-bold uppercase mb-1">{key.replace(/([A-Z])/g, ' $1')}</p>
-                      <p className="text-3xl font-black">{value}</p>
-                    </div>
-                  )
-                ))}
-              </div>
-              {result.msg && <p className="mt-6 text-sm text-emerald-100/70 italic border-t border-white/5 pt-4">💡 {result.msg}</p>}
-            </div>
-          )}
+            )}
 
-          {renderInstructions()}
-        </div>
+            {renderInstructions()}
+          </div>
 
-        <AdPlaceholder slot="bottom-tool" />
-        
-        <div className="mt-10 text-center">
-          <p className="text-[10px] text-gray-300 leading-relaxed uppercase tracking-widest max-w-lg mx-auto">
-            {DISCLAIMER_TEXT}
-          </p>
+          <AdPlaceholder slot="bottom-tool" />
+
+          <div className="mt-10 text-center">
+            <p className="text-[10px] text-gray-300 leading-relaxed uppercase tracking-widest max-w-lg mx-auto">
+              {DISCLAIMER_TEXT}
+            </p>
+          </div>
         </div>
+      </div>
+
+      {/* Right Banner Ad (hidden on small screens) */}
+      <div className="hidden lg:flex flex-col items-center justify-start ml-4">
+        <AdPlaceholder slot="right-banner" className="w-[160px] h-[600px] min-w-[160px] min-h-[600px]" />
       </div>
     </div>
   );
