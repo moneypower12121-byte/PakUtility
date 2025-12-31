@@ -237,6 +237,222 @@ const ToolDetail: React.FC = () => {
     );
   };
 
+  // --- ENGINE: Tax & Finance ---
+  const TaxFinanceEngine = () => {
+    const [inputs, setInputs] = useState<any>({});
+    
+    const calc = () => {
+      let res: any = {};
+      
+      switch (tool.id) {
+        case 'income-tax': {
+          // Yearly income tax using same slabs as salary tax
+          const annual = Number(inputs.income);
+          if (!annual || annual <= 0) { alert('Enter annual income'); return; }
+          
+          let tax = 0;
+          if (annual <= 600000) tax = 0;
+          else if (annual <= 1200000) tax = (annual - 600000) * 0.05;
+          else if (annual <= 2400000) tax = 30000 + (annual - 1200000) * 0.15;
+          else if (annual <= 3600000) tax = 210000 + (annual - 2400000) * 0.25;
+          else if (annual <= 6000000) tax = 510000 + (annual - 3600000) * 0.30;
+          else tax = 1230000 + (annual - 6000000) * 0.35;
+          
+          res = {
+            annualIncome: `Rs. ${annual.toLocaleString()}`,
+            taxDue: `Rs. ${tax.toFixed(0).toLocaleString()}`,
+            netIncome: `Rs. ${(annual - tax).toFixed(0).toLocaleString()}`,
+            effectiveRate: `${((tax / annual) * 100).toFixed(2)}%`,
+            msg: 'FBR 2024-25 individual tax slabs applied'
+          };
+          break;
+        }
+        
+        case 'freelance-tax': {
+          const remittance = Number(inputs.amount);
+          if (!remittance || remittance <= 0) { alert('Enter remittance amount'); return; }
+          
+          // 1% WHT on export remittances for freelancers
+          const wht = remittance * 0.01;
+          const netAmount = remittance - wht;
+          
+          res = {
+            grossAmount: `Rs. ${remittance.toLocaleString()}`,
+            wht: `Rs. ${wht.toFixed(0).toLocaleString()}`,
+            netReceived: `Rs. ${netAmount.toFixed(0).toLocaleString()}`,
+            msg: '1% WHT on export proceeds (adjustable at year-end)'
+          };
+          break;
+        }
+        
+        case 'wht-tax': {
+          const amount = Number(inputs.amount);
+          const type = inputs.type || 'salary';
+          if (!amount || amount <= 0) { alert('Enter transaction amount'); return; }
+          
+          let rate = 0;
+          let description = '';
+          
+          if (type === 'salary') { rate = 0; description = 'Salary WHT varies by slab'; }
+          else if (type === 'contract') { rate = 0.07; description = '7% on contracts'; }
+          else if (type === 'commission') { rate = 0.12; description = '12% on commission'; }
+          else if (type === 'rent') { rate = 0.05; description = '5% on property rent'; }
+          else if (type === 'dividend') { rate = 0.15; description = '15% on dividends'; }
+          else { rate = 0.10; description = '10% general WHT'; }
+          
+          const wht = amount * rate;
+          
+          res = {
+            transactionAmount: `Rs. ${amount.toLocaleString()}`,
+            whtRate: `${(rate * 100).toFixed(1)}%`,
+            whtAmount: `Rs. ${wht.toFixed(0).toLocaleString()}`,
+            netPayable: `Rs. ${(amount - wht).toFixed(0).toLocaleString()}`,
+            msg: description
+          };
+          break;
+        }
+        
+        case 'cap-gain-tax': {
+          const salePrice = Number(inputs.salePrice);
+          const purchasePrice = Number(inputs.purchasePrice);
+          const holdingYears = Number(inputs.years) || 0;
+          
+          if (!salePrice || !purchasePrice) { alert('Enter sale and purchase price'); return; }
+          
+          const gain = salePrice - purchasePrice;
+          let taxRate = 0.15; // Default 15%
+          
+          // Reduced rates for longer holding periods
+          if (holdingYears >= 4) taxRate = 0;
+          else if (holdingYears >= 3) taxRate = 0.075;
+          else if (holdingYears >= 2) taxRate = 0.10;
+          else if (holdingYears >= 1) taxRate = 0.125;
+          
+          const tax = gain > 0 ? gain * taxRate : 0;
+          
+          res = {
+            capitalGain: `Rs. ${gain.toLocaleString()}`,
+            taxRate: `${(taxRate * 100).toFixed(1)}%`,
+            taxDue: `Rs. ${tax.toFixed(0).toLocaleString()}`,
+            netProfit: `Rs. ${(gain - tax).toFixed(0).toLocaleString()}`,
+            msg: `Holding period: ${holdingYears} years`
+          };
+          break;
+        }
+        
+        case 'vehicle-tax': {
+          const engineCC = Number(inputs.cc);
+          const vehicleType = inputs.type || 'car';
+          
+          if (!engineCC) { alert('Enter engine capacity (CC)'); return; }
+          
+          let annualTax = 0;
+          
+          if (vehicleType === 'car') {
+            if (engineCC <= 1000) annualTax = 1200;
+            else if (engineCC <= 1300) annualTax = 2500;
+            else if (engineCC <= 1600) annualTax = 4500;
+            else if (engineCC <= 1800) annualTax = 6000;
+            else if (engineCC <= 2000) annualTax = 9000;
+            else if (engineCC <= 2500) annualTax = 15000;
+            else annualTax = 25000;
+          } else if (vehicleType === 'bike') {
+            if (engineCC <= 125) annualTax = 300;
+            else if (engineCC <= 200) annualTax = 600;
+            else annualTax = 1200;
+          } else {
+            annualTax = 5000; // Jeep/SUV
+          }
+          
+          res = {
+            vehicleType: vehicleType.toUpperCase(),
+            engineCapacity: `${engineCC} CC`,
+            annualTokenTax: `Rs. ${annualTax.toLocaleString()}`,
+            msg: 'Token tax varies by province and city'
+          };
+          break;
+        }
+        
+        case 'prize-bond-tax': {
+          const prizeAmount = Number(inputs.prize);
+          if (!prizeAmount || prizeAmount <= 0) { alert('Enter prize amount'); return; }
+          
+          // 15% WHT on prize bonds above Rs. 500,000
+          let taxRate = 0;
+          if (prizeAmount >= 500000) taxRate = 0.15;
+          else if (prizeAmount >= 100000) taxRate = 0.10;
+          
+          const tax = prizeAmount * taxRate;
+          const netPrize = prizeAmount - tax;
+          
+          res = {
+            grossPrize: `Rs. ${prizeAmount.toLocaleString()}`,
+            taxRate: `${(taxRate * 100).toFixed(0)}%`,
+            taxDeducted: `Rs. ${tax.toFixed(0).toLocaleString()}`,
+            netPrize: `Rs. ${netPrize.toFixed(0).toLocaleString()}`,
+            msg: 'Tax deducted at source by National Savings'
+          };
+          break;
+        }
+        
+        default:
+          res = { msg: 'Calculation not available' };
+      }
+      
+      setResult(res);
+    };
+    
+    return (
+      <div className="space-y-4">
+        {tool.id === 'income-tax' && (
+          <input type="number" placeholder="Annual Income (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, income: e.target.value})} />
+        )}
+        
+        {tool.id === 'freelance-tax' && (
+          <input type="number" placeholder="Remittance Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, amount: e.target.value})} />
+        )}
+        
+        {tool.id === 'wht-tax' && (
+          <>
+            <input type="number" placeholder="Transaction Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, amount: e.target.value})} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, type: e.target.value})} defaultValue="contract">
+              <option value="contract">Contract Payment (7%)</option>
+              <option value="commission">Commission (12%)</option>
+              <option value="rent">Property Rent (5%)</option>
+              <option value="dividend">Dividend (15%)</option>
+              <option value="other">Other (10%)</option>
+            </select>
+          </>
+        )}
+        
+        {tool.id === 'cap-gain-tax' && (
+          <>
+            <input type="number" placeholder="Purchase Price (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, purchasePrice: e.target.value})} />
+            <input type="number" placeholder="Sale Price (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, salePrice: e.target.value})} />
+            <input type="number" placeholder="Holding Period (Years)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, years: e.target.value})} />
+          </>
+        )}
+        
+        {tool.id === 'vehicle-tax' && (
+          <>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, type: e.target.value})} defaultValue="car">
+              <option value="car">Car</option>
+              <option value="bike">Motorcycle</option>
+              <option value="jeep">Jeep/SUV</option>
+            </select>
+            <input type="number" placeholder="Engine Capacity (CC)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, cc: e.target.value})} />
+          </>
+        )}
+        
+        {tool.id === 'prize-bond-tax' && (
+          <input type="number" placeholder="Prize Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, prize: e.target.value})} />
+        )}
+        
+        <button onClick={calc} className="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold hover:bg-emerald-800 transition shadow-lg">Calculate Tax</button>
+      </div>
+    );
+  };
+
   const renderInstructions = () => {
     const defaultSteps = ["Enter the required numerical value.", "Press the calculate/convert button.", "View the results in the box below."];
     const instructionsMap: Record<string, string[]> = {
@@ -283,6 +499,7 @@ const ToolDetail: React.FC = () => {
     if (tool.category === 'Bills & Utilities') return <BillsUtilitiesEngine />;
     if (tool.category === 'Property & Construction') return <ConstructionEngine />;
     if (tool.category === 'Islamic Tools') return <IslamicEngine />;
+    if (tool.category === 'Tax & Finance') return <TaxFinanceEngine />;
 
     return (
       <div className="text-center p-8 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
