@@ -223,15 +223,264 @@ const ToolDetail: React.FC = () => {
 
   // --- ENGINE: Islamic Tools ---
   const IslamicEngine = () => {
-    const [amt, setAmt] = useState(0);
+    const [inputs, setInputs] = useState<any>({});
+
     const calc = () => {
-      if (tool.id === 'fitra-calc') setResult({ wheat: (amt * 320), barley: (amt * 800), msg: "Rates based on 2024 averages per person" });
-      if (tool.id === 'qurbani-calc') setResult({ share: (amt / 7).toFixed(0), msg: "Cost per share in a Cow/Bull" });
-      if (tool.id === 'ushr-calc') setResult({ amount: (amt * 0.1).toFixed(0), msg: "10% on naturally irrigated land" });
+      let res: any = {};
+
+      switch (tool.id) {
+        case 'zakat-gold': {
+          const weight = Number(inputs.weight);
+          const rate = Number(inputs.rate) || 220000; // per tola
+          if (!weight || weight <= 0) { alert('Enter gold weight in tola'); return; }
+
+          const value = weight * rate;
+          const nisabTola = 7.5;
+          const nisabValue = nisabTola * rate;
+          const zakat = value >= nisabValue ? value * 0.025 : 0;
+          const shortfall = value >= nisabValue ? 0 : (nisabValue - value);
+
+          res = {
+            weight: `${weight} tola`,
+            goldValue: `Rs. ${value.toLocaleString()}`,
+            nisabValue: `Rs. ${nisabValue.toLocaleString()}`,
+            zakatDue: `Rs. ${zakat.toFixed(0).toLocaleString()}`,
+            shortfall: shortfall > 0 ? `Need Rs. ${shortfall.toFixed(0).toLocaleString()} to reach Nisab` : 'Nisab met',
+            msg: 'Nisab = 7.5 tola gold at current rate'
+          };
+          break;
+        }
+
+        case 'zakat-biz': {
+          const inventory = Number(inputs.inventory) || 0;
+          const cash = Number(inputs.cash) || 0;
+          const receivables = Number(inputs.receivables) || 0;
+          const payables = Number(inputs.payables) || 0;
+          const net = inventory + cash + receivables - payables;
+          const nisab = 180000;
+          const zakat = net >= nisab ? net * 0.025 : 0;
+
+          res = {
+            zakatableAssets: `Rs. ${net.toLocaleString()}`,
+            nisab: `Rs. ${nisab.toLocaleString()}`,
+            zakatDue: `Rs. ${zakat.toFixed(0).toLocaleString()}`,
+            msg: 'Include stock, cash, receivables. Deduct payables due now.'
+          };
+          break;
+        }
+
+        case 'fitra-calc': {
+          const members = Number(inputs.members);
+          const rate = Number(inputs.rate) || 320;
+          if (!members || members <= 0) { alert('Enter number of family members'); return; }
+          const total = members * rate;
+          res = {
+            members,
+            perPersonRate: `Rs. ${rate.toLocaleString()}`,
+            totalFitra: `Rs. ${total.toLocaleString()}`,
+            msg: 'Use wheat rate unless you prefer barley/dates rates'
+          };
+          break;
+        }
+
+        case 'kaffarah-calc': {
+          const missed = Number(inputs.missed) || 0;
+          const mealRate = Number(inputs.mealRate) || 300;
+          if (!missed || missed <= 0) { alert('Enter missed fasts count'); return; }
+          const meals = missed * 60;
+          const cost = meals * mealRate;
+          res = {
+            missedFasts: missed,
+            mealsRequired: meals,
+            totalCost: `Rs. ${cost.toLocaleString()}`,
+            msg: 'Kaffarah = feeding 60 needy persons per missed fast'
+          };
+          break;
+        }
+
+        case 'qurbani-calc': {
+          const price = Number(inputs.price);
+          const type = inputs.type || 'cow';
+          if (!price || price <= 0) { alert('Enter animal price'); return; }
+          const share = type === 'goat' ? price : price / 7;
+          res = {
+            animal: type === 'goat' ? 'Goat/Sheep (1 share)' : 'Cow/Bull (7 shares)',
+            totalPrice: `Rs. ${price.toLocaleString()}`,
+            perShare: `Rs. ${share.toFixed(0).toLocaleString()}`,
+            msg: 'Prices vary by city and weight; this is per-share estimate'
+          };
+          break;
+        }
+
+        case 'prayer-times': {
+          const city = inputs.city || 'karachi';
+          const table: Record<string, any> = {
+            karachi: { fajr: '05:30', dhuhr: '12:30', asr: '04:00', maghrib: '06:00', isha: '07:30' },
+            lahore: { fajr: '05:15', dhuhr: '12:15', asr: '03:45', maghrib: '05:45', isha: '07:15' },
+            islamabad: { fajr: '05:10', dhuhr: '12:20', asr: '03:50', maghrib: '05:55', isha: '07:25' },
+            peshawar: { fajr: '05:05', dhuhr: '12:25', asr: '04:00', maghrib: '06:05', isha: '07:35' },
+            quetta: { fajr: '05:20', dhuhr: '12:40', asr: '04:10', maghrib: '06:10', isha: '07:40' }
+          };
+          const timings = table[city];
+          res = {
+            city: city.toUpperCase(),
+            fajr: timings.fajr,
+            dhuhr: timings.dhuhr,
+            asr: timings.asr,
+            maghrib: timings.maghrib,
+            isha: timings.isha,
+            msg: 'Approx timings; verify with local masjid or app'
+          };
+          break;
+        }
+
+        case 'qibla-dir': {
+          const city = inputs.city || 'karachi';
+          const directions: Record<string, { deg: number; note: string }> = {
+            karachi: { deg: 259, note: 'West-Northwest' },
+            lahore: { deg: 254, note: 'West' },
+            islamabad: { deg: 253, note: 'West' },
+            peshawar: { deg: 251, note: 'West-Southwest' },
+            quetta: { deg: 255, note: 'West' }
+          };
+          const dir = directions[city];
+          res = {
+            city: city.toUpperCase(),
+            qiblaDirection: `${dir.deg}° (${dir.note})`,
+            msg: 'Use compass; keep phone flat for best accuracy'
+          };
+          break;
+        }
+
+        case 'hijri-conv': {
+          if (!inputs.date) { alert('Select a date'); return; }
+          const date = new Date(inputs.date);
+          if (isNaN(date.getTime())) { alert('Invalid date'); return; }
+          const formatter = new Intl.DateTimeFormat('en-TN-u-ca-islamic', { day: 'numeric', month: 'long', year: 'numeric' });
+          const hijri = formatter.format(date);
+          res = {
+            gregorian: date.toDateString(),
+            hijri,
+            msg: 'Converted using browser Islamic calendar'
+          };
+          break;
+        }
+
+        case 'roza-counter': {
+          if (!inputs.start || !inputs.end) { alert('Select start and end dates'); return; }
+          const start = new Date(inputs.start);
+          const end = new Date(inputs.end);
+          if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) { alert('Invalid date range'); return; }
+          const diff = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+          res = {
+            days: diff,
+            msg: `Total fasts between selected dates: ${diff}`
+          };
+          break;
+        }
+
+        case 'namaz-missed': {
+          const years = Number(inputs.years) || 0;
+          const extraDays = Number(inputs.days) || 0;
+          const perDay = Number(inputs.perDay) || 5;
+          const totalDays = years * 365 + extraDays;
+          const prayers = totalDays * perDay;
+          res = {
+            totalDays,
+            prayersMissed: prayers,
+            msg: 'Approximation; adjust per-day count if some prayers were offered'
+          };
+          break;
+        }
+
+        default:
+          res = { msg: 'Calculation not available' };
+      }
+
+      setResult(res);
     };
+
     return (
       <div className="space-y-4">
-        <input type="number" placeholder={tool.id === 'fitra-calc' ? "Number of family members" : "Total Value/Amount (PKR)"} className="w-full border p-4 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none" onChange={e => setAmt(Number(e.target.value))} />
+        {tool.id === 'zakat-gold' && (
+          <>
+            <input type="number" placeholder="Gold Weight (tola)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, weight: e.target.value })} />
+            <input type="number" placeholder="Gold Rate per tola (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, rate: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'zakat-biz' && (
+          <>
+            <input type="number" placeholder="Inventory / Stock Value (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, inventory: e.target.value })} />
+            <input type="number" placeholder="Cash on Hand (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, cash: e.target.value })} />
+            <input type="number" placeholder="Receivables (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, receivables: e.target.value })} />
+            <input type="number" placeholder="Payables due now (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, payables: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'fitra-calc' && (
+          <>
+            <input type="number" placeholder="Number of family members" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, members: e.target.value })} />
+            <input type="number" placeholder="Per person rate (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, rate: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'kaffarah-calc' && (
+          <>
+            <input type="number" placeholder="Missed fasts count" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, missed: e.target.value })} />
+            <input type="number" placeholder="Per meal cost (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, mealRate: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'qurbani-calc' && (
+          <>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, type: e.target.value })} defaultValue="cow">
+              <option value="cow">Cow/Bull (7 shares)</option>
+              <option value="goat">Goat/Sheep (1 share)</option>
+            </select>
+            <input type="number" placeholder="Animal Price (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, price: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'prayer-times' && (
+          <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, city: e.target.value })} defaultValue="karachi">
+            <option value="karachi">Karachi</option>
+            <option value="lahore">Lahore</option>
+            <option value="islamabad">Islamabad</option>
+            <option value="peshawar">Peshawar</option>
+            <option value="quetta">Quetta</option>
+          </select>
+        )}
+
+        {tool.id === 'qibla-dir' && (
+          <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, city: e.target.value })} defaultValue="karachi">
+            <option value="karachi">Karachi</option>
+            <option value="lahore">Lahore</option>
+            <option value="islamabad">Islamabad</option>
+            <option value="peshawar">Peshawar</option>
+            <option value="quetta">Quetta</option>
+          </select>
+        )}
+
+        {tool.id === 'hijri-conv' && (
+          <input type="date" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, date: e.target.value })} />
+        )}
+
+        {tool.id === 'roza-counter' && (
+          <>
+            <input type="date" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, start: e.target.value })} />
+            <input type="date" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, end: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'namaz-missed' && (
+          <>
+            <input type="number" placeholder="Years missed" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, years: e.target.value })} />
+            <input type="number" placeholder="Additional days" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, days: e.target.value })} />
+            <input type="number" placeholder="Prayers missed per day (default 5)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, perDay: e.target.value })} />
+          </>
+        )}
+
         <button onClick={calc} className="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold hover:bg-emerald-800 transition">Calculate</button>
       </div>
     );
