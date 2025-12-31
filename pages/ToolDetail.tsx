@@ -138,8 +138,11 @@ const ToolDetail: React.FC = () => {
         {tool.id === 'water-bill' && (
           <>
             <input type="number" placeholder="Units Consumed (Cubic Meters)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, units: Number(e.target.value)})} />
-            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, city: e.target.value})}>
-              <option>Select City</option><option>Lahore</option><option>Karachi</option><option>Islamabad</option><option>Other</option>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, city: e.target.value})} defaultValue="Lahore">
+              <option value="Lahore">Lahore</option>
+              <option value="Karachi">Karachi</option>
+              <option value="Islamabad">Islamabad</option>
+              <option value="Other">Other</option>
             </select>
           </>
         )}
@@ -162,8 +165,9 @@ const ToolDetail: React.FC = () => {
         {tool.id === 'gen-fuel' && (
           <>
             <input type="number" placeholder="Generator Rating (kVA)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, kva: Number(e.target.value)})} />
-            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, fuel: e.target.value})}>
-              <option>Fuel Type</option><option>Petrol</option><option>Diesel</option>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, fuel: e.target.value})} defaultValue="Petrol">
+              <option value="Petrol">Petrol</option>
+              <option value="Diesel">Diesel</option>
             </select>
             <input type="number" placeholder="Fuel Price (PKR/Litre)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, price: Number(e.target.value)})} />
           </>
@@ -177,8 +181,12 @@ const ToolDetail: React.FC = () => {
         )}
         {tool.id === 'net-usage' && (
           <>
-            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, activity: e.target.value})}>
-              <option>Primary Activity</option><option>HD Streaming</option><option>Browsing</option><option>Gaming</option><option>Social Media</option>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, activity: e.target.value})} defaultValue="">
+              <option value="" disabled>Select Primary Activity</option>
+              <option value="HD Streaming">HD Streaming</option>
+              <option value="Browsing">Browsing</option>
+              <option value="Gaming">Gaming</option>
+              <option value="Social Media">Social Media</option>
             </select>
             <input type="number" placeholder="Hours per Day" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, hours: Number(e.target.value)})} />
           </>

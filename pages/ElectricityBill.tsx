@@ -48,7 +48,6 @@ const ElectricityBill: React.FC = () => {
     const total = costOfElectricity + taxes;
 
     setResult({
-      rate,
       cost: costOfElectricity.toFixed(2),
       taxes: taxes.toFixed(2),
       total: total.toFixed(2)
