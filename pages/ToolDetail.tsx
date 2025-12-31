@@ -202,21 +202,191 @@ const ToolDetail: React.FC = () => {
 
   // --- ENGINE: Construction & Property ---
   const ConstructionEngine = () => {
-    const [val1, setVal1] = useState(0);
-    const [val2, setVal2] = useState(0);
+    const [inputs, setInputs] = useState<any>({});
 
     const calc = () => {
-      if (tool.id === 'bricks-calc') setResult({ bricks: Math.ceil(val1 * 13.5 * (val2 || 1)), msg: "Standard 9-inch wall calculation" });
-      if (tool.id === 'cement-calc') setResult({ bags: Math.ceil(val1 * 0.4), msg: "Estimated for plaster and masonry" });
-      if (tool.id === 'steel-weight') setResult({ kg: Math.ceil(val1 * 4.5), msg: "Standard 60-grade steel for slab" });
-      if (tool.id === 'const-cost') setResult({ cost: (val1 * 3500).toLocaleString(), msg: "Grey structure cost estimate (PKR)" });
+      let res: any = {};
+
+      switch (tool.id) {
+        case 'const-cost': {
+          const area = Number(inputs.area);
+          const rate = Number(inputs.rate) || 3500;
+          if (!area || area <= 0) { alert('Enter covered area'); return; }
+          const cost = area * rate;
+          res = { area: `${area} sq ft`, rate: `Rs. ${rate}/sq ft`, totalCost: `Rs. ${cost.toLocaleString()}`, msg: 'Grey structure estimate; finishes vary.' };
+          break;
+        }
+
+        case 'cement-calc': {
+          const area = Number(inputs.area);
+          if (!area || area <= 0) { alert('Enter area'); return; }
+          const bags = Math.ceil(area * 0.4); // rough thumb rule
+          res = { area: `${area} sq ft`, cementBags: `${bags} bags (50kg)`, msg: 'Approx for plaster/masonry; adjust for thickness.' };
+          break;
+        }
+
+        case 'steel-weight': {
+          const area = Number(inputs.area);
+          if (!area || area <= 0) { alert('Enter area'); return; }
+          const kg = Math.ceil(area * 4.5);
+          res = { area: `${area} sq ft`, steel: `${kg} kg (60-grade)`, msg: 'Typical slab steel allowance.' };
+          break;
+        }
+
+        case 'bricks-calc': {
+          const area = Number(inputs.area);
+          const thickness = Number(inputs.thickness) || 9;
+          if (!area || area <= 0) { alert('Enter wall area'); return; }
+          const factor = thickness / 9; // 9" base
+          const bricks = Math.ceil(area * 13.5 * factor);
+          res = { wallArea: `${area} sq ft`, thickness: `${thickness}"`, bricksNeeded: bricks, msg: '13.5 bricks/sqft for 9" wall baseline.' };
+          break;
+        }
+
+        case 'paint-calc': {
+          const area = Number(inputs.area);
+          const coats = Number(inputs.coats) || 2;
+          if (!area || area <= 0) { alert('Enter paintable area'); return; }
+          const coverageSqft = 130; // per litre
+          const litres = Math.ceil((area / coverageSqft) * coats * 1.1); // 10% wastage
+          res = { area: `${area} sq ft`, coats, litres: `${litres} litres`, msg: 'Coverage ~130 sq ft/litre/coat with 10% wastage.' };
+          break;
+        }
+
+        case 'tile-calc': {
+          const area = Number(inputs.area);
+          const len = Number(inputs.len);
+          const wid = Number(inputs.wid);
+          if (!area || area <= 0 || !len || !wid) { alert('Enter area and tile size'); return; }
+          const tileSqft = (len * wid) / 144;
+          if (tileSqft <= 0) { alert('Tile size invalid'); return; }
+          const tiles = Math.ceil((area / tileSqft) * 1.1); // 10% wastage
+          res = { area: `${area} sq ft`, tileSize: `${len}x${wid} in`, tilesNeeded: tiles, msg: 'Includes 10% wastage.' };
+          break;
+        }
+
+        case 'plot-conv': {
+          const value = Number(inputs.value);
+          const unit = inputs.unit || 'marla';
+          if (!value || value <= 0) { alert('Enter area'); return; }
+          // Standards: 1 marla = 272.25 sq ft, 1 kanal = 20 marla
+          const sqft = unit === 'sqft' ? value : unit === 'kanal' ? value * 20 * 272.25 : value * 272.25;
+          const marla = sqft / 272.25;
+          const kanal = marla / 20;
+          res = { sqft: sqft.toFixed(2), marla: marla.toFixed(2), kanal: kanal.toFixed(3), msg: 'Using Punjab standard: 1 marla = 272.25 sq ft.' };
+          break;
+        }
+
+        case 'rent-yield': {
+          const rent = Number(inputs.rent);
+          const price = Number(inputs.price);
+          if (!rent || rent <= 0 || !price || price <= 0) { alert('Enter rent and property value'); return; }
+          const annual = rent * 12;
+          const yieldPct = (annual / price) * 100;
+          const paybackYears = price / annual;
+          res = { monthlyRent: `Rs. ${rent.toLocaleString()}`, propertyValue: `Rs. ${price.toLocaleString()}`, annualYield: `${yieldPct.toFixed(2)}%`, payback: `${paybackYears.toFixed(1)} years`, msg: 'Gross yield (before expenses/taxes).' };
+          break;
+        }
+
+        case 'loan-emi': {
+          const principal = Number(inputs.amount);
+          const rate = Number(inputs.rate);
+          const years = Number(inputs.years);
+          if (!principal || principal <= 0 || !rate || rate <= 0 || !years || years <= 0) { alert('Enter amount, rate, and years'); return; }
+          const monthlyRate = rate / 12 / 100;
+          const n = years * 12;
+          const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, n)) / (Math.pow(1 + monthlyRate, n) - 1);
+          const totalPay = emi * n;
+          const interest = totalPay - principal;
+          res = {
+            amount: `Rs. ${principal.toLocaleString()}`,
+            emi: `Rs. ${emi.toFixed(0).toLocaleString()}`,
+            totalPay: `Rs. ${totalPay.toFixed(0).toLocaleString()}`,
+            interest: `Rs. ${interest.toFixed(0).toLocaleString()}`,
+            msg: 'Standard EMI formula (reducing balance).'
+          };
+          break;
+        }
+
+        case 'prop-price': {
+          const area = Number(inputs.area);
+          const rate = Number(inputs.rate);
+          const unit = inputs.unit || 'sqft';
+          if (!area || area <= 0 || !rate || rate <= 0) { alert('Enter area and rate'); return; }
+          const sqft = unit === 'sqft' ? area : unit === 'marla' ? area * 272.25 : area * 20 * 272.25;
+          const total = sqft * rate;
+          res = { area: `${area} ${unit}`, rate: `Rs. ${rate}/sq ft`, totalPrice: `Rs. ${total.toLocaleString()}`, msg: 'Estimate; confirm with local market comps.' };
+          break;
+        }
+
+        default:
+          res = { msg: 'Calculation not available' };
+      }
+
+      setResult(res);
     };
 
     return (
       <div className="space-y-4">
-        <input type="number" placeholder="Area (Sq Ft)" className="w-full border p-4 rounded-xl" onChange={e => setVal1(Number(e.target.value))} />
-        {tool.id === 'bricks-calc' && <input type="number" placeholder="Wall Thickness (inches)" className="w-full border p-4 rounded-xl" onChange={e => setVal2(Number(e.target.value))} />}
-        <button onClick={calc} className="w-full bg-orange-600 text-white p-4 rounded-xl font-bold hover:bg-orange-700 transition shadow-lg">Calculate Materials</button>
+        {(tool.id === 'const-cost' || tool.id === 'cement-calc' || tool.id === 'steel-weight' || tool.id === 'paint-calc' || tool.id === 'bricks-calc' || tool.id === 'tile-calc' || tool.id === 'prop-price') && (
+          <input type="number" placeholder={tool.id === 'bricks-calc' ? 'Wall Area (sq ft)' : 'Area (sq ft)'} className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, area: e.target.value })} />
+        )}
+
+        {tool.id === 'const-cost' && (
+          <input type="number" placeholder="Rate per sq ft (PKR)" className="w-full border p-4 rounded-xl" defaultValue={3500} onChange={e => setInputs({ ...inputs, rate: e.target.value })} />
+        )}
+
+        {tool.id === 'bricks-calc' && (
+          <input type="number" placeholder="Wall Thickness (inches)" className="w-full border p-4 rounded-xl" defaultValue={9} onChange={e => setInputs({ ...inputs, thickness: e.target.value })} />
+        )}
+
+        {tool.id === 'paint-calc' && (
+          <input type="number" placeholder="Number of coats" className="w-full border p-4 rounded-xl" defaultValue={2} onChange={e => setInputs({ ...inputs, coats: e.target.value })} />
+        )}
+
+        {tool.id === 'tile-calc' && (
+          <div className="grid grid-cols-2 gap-4">
+            <input type="number" placeholder="Tile Length (inch)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, len: e.target.value })} />
+            <input type="number" placeholder="Tile Width (inch)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, wid: e.target.value })} />
+          </div>
+        )}
+
+        {tool.id === 'plot-conv' && (
+          <>
+            <input type="number" placeholder="Area value" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, unit: e.target.value })} defaultValue="marla">
+              <option value="sqft">Square Feet</option>
+              <option value="marla">Marla</option>
+              <option value="kanal">Kanal</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'rent-yield' && (
+          <>
+            <input type="number" placeholder="Monthly Rent (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, rent: e.target.value })} />
+            <input type="number" placeholder="Property Value (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, price: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'loan-emi' && (
+          <>
+            <input type="number" placeholder="Loan Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, amount: e.target.value })} />
+            <input type="number" placeholder="Annual Interest Rate (%)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, rate: e.target.value })} />
+            <input type="number" placeholder="Tenure (years)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, years: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'prop-price' && (
+          <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, unit: e.target.value })} defaultValue="sqft">
+            <option value="sqft">Square Feet</option>
+            <option value="marla">Marla</option>
+            <option value="kanal">Kanal</option>
+          </select>
+        )}
+
+        {/* Default action */}
+        <button onClick={calc} className="w-full bg-orange-600 text-white p-4 rounded-xl font-bold hover:bg-orange-700 transition shadow-lg">Calculate</button>
       </div>
     );
   };
