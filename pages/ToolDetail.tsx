@@ -590,6 +590,203 @@ const ToolDetail: React.FC = () => {
     );
   };
 
+  // --- ENGINE: Identity & Personal ---
+  const IdentityEngine = () => {
+    const [inputs, setInputs] = useState<any>({});
+
+    const calc = () => {
+      let res: any = {};
+
+      switch (tool.id) {
+        case 'cnic-check': {
+          const num = (inputs.cnic || '').trim();
+          const regex = /^\d{5}-\d{7}-\d$/;
+          const ok = regex.test(num);
+          res = ok ? { valid: 'CNIC format is valid ✅' } : { valid: 'Invalid format. Use 12345-1234567-1' };
+          break;
+        }
+
+        case 'cnic-age': {
+          const dobStr = inputs.dob;
+          if (!dobStr) { alert('Enter date of birth'); return; }
+          const dob = new Date(dobStr);
+          if (isNaN(dob.getTime())) { alert('Invalid date'); return; }
+          const today = new Date();
+          let age = today.getFullYear() - dob.getFullYear();
+          const m = today.getMonth() - dob.getMonth();
+          if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+          res = { dob: dob.toDateString(), ageYears: age, msg: `Approx age as of today` };
+          break;
+        }
+
+        case 'cnic-prov': {
+          const num = (inputs.cnic || '').trim();
+          if (!/^\d{5}-\d{7}-\d$/.test(num)) { alert('Enter CNIC like 12345-1234567-1'); return; }
+          const first = num.charAt(0);
+          const map: Record<string, string> = { '1': 'Khyber Pakhtunkhwa', '2': 'FATA', '3': 'Punjab', '4': 'Sindh', '5': 'Balochistan', '6': 'Islamabad', '7': 'Gilgit Baltistan', '8': 'Azad Kashmir' };
+          res = { province: map[first] || 'Unknown', msg: 'Based on first digit of CNIC' };
+          break;
+        }
+
+        case 'sim-rules': {
+          res = {
+            voiceLimit: '5 voice SIMs per CNIC',
+            dataLimit: '3 data-only SIMs per CNIC',
+            check: 'Dial *8484# or visit cnic.sims.pk to verify',
+            msg: 'PTA SIM ownership rules'
+          };
+          break;
+        }
+
+        case 'passport-exp': {
+          const issue = inputs.issue ? new Date(inputs.issue) : null;
+          const years = Number(inputs.years) || 5;
+          if (!issue || isNaN(issue.getTime())) { alert('Select issue date'); return; }
+          const expiry = new Date(issue);
+          expiry.setFullYear(expiry.getFullYear() + years);
+          const diffDays = Math.max(0, Math.ceil((expiry.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+          res = {
+            issueDate: issue.toDateString(),
+            expiryDate: expiry.toDateString(),
+            daysLeft: diffDays,
+            msg: `${years}-year passport validity`
+          };
+          break;
+        }
+
+        case 'visa-dur': {
+          if (!inputs.start || !inputs.end) { alert('Select start and end dates'); return; }
+          const start = new Date(inputs.start);
+          const end = new Date(inputs.end);
+          if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) { alert('Invalid range'); return; }
+          const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+          res = { totalDays: days, msg: `Stay duration: ${days} days` };
+          break;
+        }
+
+        case 'license-exp': {
+          const issue = inputs.issue ? new Date(inputs.issue) : null;
+          const years = Number(inputs.years) || 5;
+          if (!issue || isNaN(issue.getTime())) { alert('Select issue date'); return; }
+          const expiry = new Date(issue);
+          expiry.setFullYear(expiry.getFullYear() + years);
+          const diffDays = Math.max(0, Math.ceil((expiry.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+          res = {
+            issueDate: issue.toDateString(),
+            expiryDate: expiry.toDateString(),
+            daysLeft: diffDays,
+            msg: `${years}-year license validity`
+          };
+          break;
+        }
+
+        case 'veh-reg-city': {
+          const plate = (inputs.plate || '').trim().toUpperCase();
+          if (!plate) { alert('Enter plate number'); return; }
+          const first = plate.split(/[-\s]/)[0];
+          const prefix = first.replace(/[^A-Z]/g, '');
+          let city = 'Unknown';
+          if (prefix.startsWith('L')) city = 'Lahore';
+          else if (prefix.startsWith('K')) city = 'Karachi';
+          else if (prefix.startsWith('R') || prefix.startsWith('RW')) city = 'Rawalpindi';
+          else if (prefix.startsWith('ISB') || prefix.startsWith('ICT')) city = 'Islamabad';
+          else if (prefix.startsWith('P')) city = 'Peshawar';
+          else if (prefix.startsWith('M')) city = 'Multan';
+          res = { plate, possibleCity: city, msg: 'Indicative only; check official record for confirmation' };
+          break;
+        }
+
+        case 'ntn-check': {
+          const ntn = (inputs.ntn || '').trim();
+          const ok = /^\d{7}-\d$/.test(ntn) || /^\d{7}$/.test(ntn);
+          res = ok ? { valid: 'Looks like a valid NTN format' } : { valid: 'Invalid NTN format. Use 7 digits or 7 digits with dash.' };
+          break;
+        }
+
+        case 'iban-check': {
+          const iban = (inputs.iban || '').replace(/\s+/g, '').toUpperCase();
+          const basicOk = /^PK\d{22}$/.test(iban);
+          res = {
+            iban: iban || '—',
+            length: iban.length,
+            status: basicOk ? 'Format OK (PK + 22 digits)' : 'Invalid format (needs PK + 22 digits)',
+            msg: 'Full IBAN validation requires mod-97; this checks format only'
+          };
+          break;
+        }
+
+        default:
+          res = { msg: 'Calculation not available' };
+      }
+
+      setResult(res);
+    };
+
+    return (
+      <div className="space-y-4">
+        {tool.id === 'cnic-check' && (
+          <input type="text" placeholder="CNIC (12345-1234567-1)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, cnic: e.target.value })} />
+        )}
+
+        {tool.id === 'cnic-age' && (
+          <input type="date" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, dob: e.target.value })} />
+        )}
+
+        {tool.id === 'cnic-prov' && (
+          <input type="text" placeholder="CNIC (12345-1234567-1)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, cnic: e.target.value })} />
+        )}
+
+        {tool.id === 'sim-rules' && (
+          <button className="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold" onClick={calc}>Show SIM Rules</button>
+        )}
+
+        {tool.id === 'passport-exp' && (
+          <>
+            <input type="date" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, issue: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, years: e.target.value })} defaultValue={5}>
+              <option value={5}>5-year passport</option>
+              <option value={10}>10-year passport</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'visa-dur' && (
+          <>
+            <input type="date" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, start: e.target.value })} />
+            <input type="date" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, end: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'license-exp' && (
+          <>
+            <input type="date" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, issue: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, years: e.target.value })} defaultValue={5}>
+              <option value={3}>3-year license</option>
+              <option value={5}>5-year license</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'veh-reg-city' && (
+          <input type="text" placeholder="Plate (e.g., LEA-1234)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, plate: e.target.value })} />
+        )}
+
+        {tool.id === 'ntn-check' && (
+          <input type="text" placeholder="NTN (1234567-8)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, ntn: e.target.value })} />
+        )}
+
+        {tool.id === 'iban-check' && (
+          <input type="text" placeholder="PK00XXXX0000000000000000" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, iban: e.target.value })} />
+        )}
+
+        {/* Default button for non-static tools */}
+        {tool.id !== 'sim-rules' && (
+          <button onClick={calc} className="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold hover:bg-emerald-800 transition">Calculate / Check</button>
+        )}
+      </div>
+    );
+  };
+
   // --- ENGINE: Tax & Finance ---
   const TaxFinanceEngine = () => {
     const [inputs, setInputs] = useState<any>({});
@@ -882,6 +1079,7 @@ const ToolDetail: React.FC = () => {
     if (tool.category === 'Property & Construction') return <ConstructionEngine />;
     if (tool.category === 'Islamic Tools') return <IslamicEngine />;
     if (tool.category === 'Tax & Finance') return <TaxFinanceEngine />;
+    if (tool.category === 'Identity & Personal') return <IdentityEngine />;
 
     return (
       <div className="text-center p-8 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
