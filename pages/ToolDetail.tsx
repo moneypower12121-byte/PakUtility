@@ -2642,6 +2642,340 @@ const ToolDetail: React.FC = () => {
     );
   };
 
+  // --- ENGINE: Bonus ---
+  const BonusEngine = () => {
+    const [inputs, setInputs] = useState<any>({});
+
+    const calc = () => {
+      let res: any = {};
+
+      switch (tool.id) {
+        case 'ramadan-count': {
+          const ramadan2025 = new Date('2025-03-01');
+          const today = new Date();
+          const diffTime = ramadan2025.getTime() - today.getTime();
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          
+          res = {
+            today: today.toLocaleDateString('en-PK'),
+            ramadanDate: 'March 1, 2025 (approx)',
+            daysRemaining: diffDays > 0 ? diffDays : 'Ramadan has passed',
+            weeksRemaining: diffDays > 0 ? Math.floor(diffDays / 7) : 0,
+            msg: 'Ramadan dates depend on moon sighting'
+          };
+          break;
+        }
+
+        case 'budget-planner': {
+          const income = Number(inputs.income);
+          const rent = Number(inputs.rent) || 0;
+          const groceries = Number(inputs.groceries) || 0;
+          const bills = Number(inputs.bills) || 0;
+          const transport = Number(inputs.transport) || 0;
+          const other = Number(inputs.other) || 0;
+          
+          if (!income) { alert('Enter monthly income'); return; }
+          
+          const totalExpenses = rent + groceries + bills + transport + other;
+          const savings = income - totalExpenses;
+          const savingsPercent = (savings / income) * 100;
+          
+          res = {
+            monthlyIncome: `Rs. ${income.toLocaleString()}`,
+            totalExpenses: `Rs. ${totalExpenses.toLocaleString()}`,
+            rent: `Rs. ${rent.toLocaleString()}`,
+            groceries: `Rs. ${groceries.toLocaleString()}`,
+            bills: `Rs. ${bills.toLocaleString()}`,
+            transport: `Rs. ${transport.toLocaleString()}`,
+            other: `Rs. ${other.toLocaleString()}`,
+            savings: `Rs. ${savings.toLocaleString()}`,
+            savingsPercent: `${savingsPercent.toFixed(1)}%`,
+            msg: 'Aim to save at least 20% of income'
+          };
+          break;
+        }
+
+        case 'expense-tracker': {
+          const food = Number(inputs.food) || 0;
+          const shopping = Number(inputs.shopping) || 0;
+          const entertainment = Number(inputs.entertainment) || 0;
+          const health = Number(inputs.health) || 0;
+          const education = Number(inputs.education) || 0;
+          const misc = Number(inputs.misc) || 0;
+          
+          const total = food + shopping + entertainment + health + education + misc;
+          
+          res = {
+            food: `Rs. ${food.toLocaleString()}`,
+            shopping: `Rs. ${shopping.toLocaleString()}`,
+            entertainment: `Rs. ${entertainment.toLocaleString()}`,
+            health: `Rs. ${health.toLocaleString()}`,
+            education: `Rs. ${education.toLocaleString()}`,
+            misc: `Rs. ${misc.toLocaleString()}`,
+            totalExpenses: `Rs. ${total.toLocaleString()}`,
+            dailyAverage: `Rs. ${(total / 30).toFixed(0)}`,
+            msg: 'Track daily to control overspending'
+          };
+          break;
+        }
+
+        case 'wedding-budget': {
+          const guests = Number(inputs.guests);
+          const venue = Number(inputs.venue) || 0;
+          const catering = Number(inputs.catering) || 0;
+          const decoration = Number(inputs.decoration) || 0;
+          const photography = Number(inputs.photography) || 0;
+          const others = Number(inputs.others) || 0;
+          
+          if (!guests) { alert('Enter number of guests'); return; }
+          
+          const cateringTotal = catering > 0 ? catering : guests * 2000;
+          const total = venue + cateringTotal + decoration + photography + others;
+          const perGuest = total / guests;
+          
+          res = {
+            totalGuests: guests,
+            venue: `Rs. ${venue.toLocaleString()}`,
+            catering: `Rs. ${cateringTotal.toLocaleString()}`,
+            decoration: `Rs. ${decoration.toLocaleString()}`,
+            photography: `Rs. ${photography.toLocaleString()}`,
+            others: `Rs. ${others.toLocaleString()}`,
+            totalBudget: `Rs. ${total.toLocaleString()}`,
+            perGuest: `Rs. ${perGuest.toFixed(0)}`,
+            msg: 'Average wedding in Pakistan: Rs. 20-40 lacs'
+          };
+          break;
+        }
+
+        case 'education-cost': {
+          const tuition = Number(inputs.tuition);
+          const books = Number(inputs.books) || 0;
+          const transport = Number(inputs.transport) || 0;
+          const hostel = Number(inputs.hostel) || 0;
+          const misc = Number(inputs.misc) || 0;
+          const years = Number(inputs.years) || 1;
+          
+          if (!tuition) { alert('Enter tuition fee'); return; }
+          
+          const annualCost = (tuition + books + transport + hostel + misc);
+          const totalCost = annualCost * years;
+          
+          res = {
+            tuitionFee: `Rs. ${tuition.toLocaleString()}`,
+            books: `Rs. ${books.toLocaleString()}`,
+            transport: `Rs. ${transport.toLocaleString()}`,
+            hostel: `Rs. ${hostel.toLocaleString()}`,
+            misc: `Rs. ${misc.toLocaleString()}`,
+            annualCost: `Rs. ${annualCost.toLocaleString()}`,
+            years: years,
+            totalCost: `Rs. ${totalCost.toLocaleString()}`,
+            msg: 'Includes all education expenses'
+          };
+          break;
+        }
+
+        case 'freelance-earn': {
+          const projectFee = Number(inputs.projectFee);
+          const platformFee = Number(inputs.platformFee) || 20;
+          const wht = Number(inputs.wht) || 1;
+          
+          if (!projectFee) { alert('Enter project fee'); return; }
+          
+          const platformCut = projectFee * (platformFee / 100);
+          const afterPlatform = projectFee - platformCut;
+          const whtAmount = afterPlatform * (wht / 100);
+          const netEarning = afterPlatform - whtAmount;
+          const pkrAmount = netEarning * 278;
+          
+          res = {
+            projectFee: `$${projectFee}`,
+            platformFee: `${platformFee}% ($${platformCut.toFixed(2)})`,
+            afterPlatform: `$${afterPlatform.toFixed(2)}`,
+            wht: `${wht}% ($${whtAmount.toFixed(2)})`,
+            netEarning: `$${netEarning.toFixed(2)}`,
+            inPKR: `Rs. ${pkrAmount.toFixed(0).toLocaleString()}`,
+            msg: 'Freelance earnings after platform and WHT'
+          };
+          break;
+        }
+
+        case 'fiverr-fee': {
+          const orderValue = Number(inputs.orderValue);
+          if (!orderValue) { alert('Enter order value'); return; }
+          
+          const fiverrFee = orderValue * 0.20;
+          const netEarning = orderValue - fiverrFee;
+          const pkrAmount = netEarning * 278;
+          
+          res = {
+            orderValue: `$${orderValue}`,
+            fiverrFee: `20% ($${fiverrFee.toFixed(2)})`,
+            netEarning: `$${netEarning.toFixed(2)}`,
+            inPKR: `Rs. ${pkrAmount.toFixed(0).toLocaleString()}`,
+            msg: 'Fiverr charges 20% on each order'
+          };
+          break;
+        }
+
+        case 'yt-earn': {
+          const views = Number(inputs.views);
+          const cpm = Number(inputs.cpm) || 2;
+          
+          if (!views) { alert('Enter monthly views'); return; }
+          
+          const revenue = (views / 1000) * cpm;
+          const pkrRevenue = revenue * 278;
+          
+          res = {
+            monthlyViews: views.toLocaleString(),
+            cpm: `$${cpm} per 1000 views`,
+            estimatedRevenue: `$${revenue.toFixed(2)}`,
+            inPKR: `Rs. ${pkrRevenue.toFixed(0).toLocaleString()}`,
+            msg: 'CPM varies by niche (Pakistan: $1-5)'
+          };
+          break;
+        }
+
+        case 'tiktok-earn': {
+          const views = Number(inputs.views);
+          const rate = Number(inputs.rate) || 0.02;
+          
+          if (!views) { alert('Enter monthly views'); return; }
+          
+          const revenue = (views / 1000) * rate;
+          const pkrRevenue = revenue * 278;
+          
+          res = {
+            monthlyViews: views.toLocaleString(),
+            ratePerK: `$${rate} per 1000 views`,
+            estimatedRevenue: `$${revenue.toFixed(2)}`,
+            inPKR: `Rs. ${pkrRevenue.toFixed(0).toLocaleString()}`,
+            msg: 'TikTok Creator Fund rate (Pakistan)'
+          };
+          break;
+        }
+
+        case 'adsense-calc': {
+          const pageViews = Number(inputs.pageViews);
+          const cpc = Number(inputs.cpc) || 0.10;
+          const ctr = Number(inputs.ctr) || 2;
+          
+          if (!pageViews) { alert('Enter monthly page views'); return; }
+          
+          const clicks = pageViews * (ctr / 100);
+          const revenue = clicks * cpc;
+          const pkrRevenue = revenue * 278;
+          
+          res = {
+            pageViews: pageViews.toLocaleString(),
+            ctr: `${ctr}%`,
+            estimatedClicks: clicks.toFixed(0),
+            cpc: `$${cpc}`,
+            estimatedRevenue: `$${revenue.toFixed(2)}`,
+            inPKR: `Rs. ${pkrRevenue.toFixed(0).toLocaleString()}`,
+            msg: 'AdSense earnings depend on niche and traffic quality'
+          };
+          break;
+        }
+
+        default:
+          res = { msg: 'Calculation not available' };
+      }
+
+      setResult(res);
+    };
+
+    return (
+      <div className="space-y-4">
+        {tool.id === 'ramadan-count' && (
+          <div className="text-center p-8 bg-emerald-50 rounded-xl">
+            <p className="text-sm text-gray-600">Click Calculate to see countdown</p>
+          </div>
+        )}
+
+        {tool.id === 'budget-planner' && (
+          <>
+            <input type="number" placeholder="Monthly Income (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, income: e.target.value })} />
+            <input type="number" placeholder="Rent (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, rent: e.target.value })} />
+            <input type="number" placeholder="Groceries (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, groceries: e.target.value })} />
+            <input type="number" placeholder="Bills (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, bills: e.target.value })} />
+            <input type="number" placeholder="Transport (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, transport: e.target.value })} />
+            <input type="number" placeholder="Other Expenses (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, other: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'expense-tracker' && (
+          <>
+            <input type="number" placeholder="Food (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, food: e.target.value })} />
+            <input type="number" placeholder="Shopping (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, shopping: e.target.value })} />
+            <input type="number" placeholder="Entertainment (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, entertainment: e.target.value })} />
+            <input type="number" placeholder="Health (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, health: e.target.value })} />
+            <input type="number" placeholder="Education (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, education: e.target.value })} />
+            <input type="number" placeholder="Miscellaneous (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, misc: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'wedding-budget' && (
+          <>
+            <input type="number" placeholder="Number of Guests" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, guests: e.target.value })} />
+            <input type="number" placeholder="Venue Cost (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, venue: e.target.value })} />
+            <input type="number" placeholder="Catering per Guest (PKR)" className="w-full border p-4 rounded-xl" defaultValue={2000} onChange={e => setInputs({ ...inputs, catering: e.target.value })} />
+            <input type="number" placeholder="Decoration (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, decoration: e.target.value })} />
+            <input type="number" placeholder="Photography (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, photography: e.target.value })} />
+            <input type="number" placeholder="Others (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, others: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'education-cost' && (
+          <>
+            <input type="number" placeholder="Annual Tuition Fee (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, tuition: e.target.value })} />
+            <input type="number" placeholder="Books & Supplies (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, books: e.target.value })} />
+            <input type="number" placeholder="Transport (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, transport: e.target.value })} />
+            <input type="number" placeholder="Hostel/Accommodation (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, hostel: e.target.value })} />
+            <input type="number" placeholder="Miscellaneous (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, misc: e.target.value })} />
+            <input type="number" placeholder="Years of Study" className="w-full border p-4 rounded-xl" defaultValue={1} onChange={e => setInputs({ ...inputs, years: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'freelance-earn' && (
+          <>
+            <input type="number" placeholder="Project Fee ($)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, projectFee: e.target.value })} />
+            <input type="number" placeholder="Platform Fee (%)" className="w-full border p-4 rounded-xl" defaultValue={20} onChange={e => setInputs({ ...inputs, platformFee: e.target.value })} />
+            <input type="number" placeholder="WHT (%)" className="w-full border p-4 rounded-xl" defaultValue={1} onChange={e => setInputs({ ...inputs, wht: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'fiverr-fee' && (
+          <input type="number" placeholder="Order Value ($)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, orderValue: e.target.value })} />
+        )}
+
+        {tool.id === 'yt-earn' && (
+          <>
+            <input type="number" placeholder="Monthly Views" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, views: e.target.value })} />
+            <input type="number" placeholder="CPM ($)" className="w-full border p-4 rounded-xl" defaultValue={2} onChange={e => setInputs({ ...inputs, cpm: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'tiktok-earn' && (
+          <>
+            <input type="number" placeholder="Monthly Views" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, views: e.target.value })} />
+            <input type="number" placeholder="Rate per 1K views ($)" className="w-full border p-4 rounded-xl" defaultValue={0.02} onChange={e => setInputs({ ...inputs, rate: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'adsense-calc' && (
+          <>
+            <input type="number" placeholder="Monthly Page Views" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, pageViews: e.target.value })} />
+            <input type="number" placeholder="CTR (%)" className="w-full border p-4 rounded-xl" defaultValue={2} onChange={e => setInputs({ ...inputs, ctr: e.target.value })} />
+            <input type="number" placeholder="CPC ($)" className="w-full border p-4 rounded-xl" defaultValue={0.10} onChange={e => setInputs({ ...inputs, cpc: e.target.value })} />
+          </>
+        )}
+
+        <button onClick={calc} className="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold hover:bg-emerald-800 transition">Calculate</button>
+      </div>
+    );
+  };
+
   const renderInstructions = () => {
     const defaultSteps = ["Enter the required numerical value.", "Press the calculate/convert button.", "View the results in the box below."];
     const instructionsMap: Record<string, string[]> = {
@@ -2694,6 +3028,7 @@ const ToolDetail: React.FC = () => {
     if (tool.category === 'Daily Life') return <DailyLifeEngine />;
     if (tool.category === 'Conversion') return <ConversionEngine />;
     if (tool.category === 'Banking & Payments') return <BankingEngine />;
+    if (tool.category === 'Bonus') return <BonusEngine />;
 
     return (
       <div className="text-center p-8 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
