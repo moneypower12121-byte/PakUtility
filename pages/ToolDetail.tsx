@@ -205,6 +205,16 @@ const ToolDetail: React.FC = () => {
     const [val1, setVal1] = useState(0);
     const [val2, setVal2] = useState(0);
     
+    const provinceCityMap: Record<string, string[]> = {
+      sindh: ['karachi', 'hyderabad', 'sukkur', 'larkana', 'mirpurkhas', 'nawabshah', 'khairpur'],
+      punjab: ['lahore', 'rawalpindi', 'islamabad', 'faisalabad', 'multan', 'gujranwala', 'sialkot', 'bahawalpur', 'sargodha', 'rahimyar khan', 'dera ghazi khan', 'gujrat'],
+      kpk: ['peshawar', 'abbottabad', 'mardan', 'swat', 'kohat', 'dera ismail khan', 'mansehra'],
+      balochistan: ['quetta', 'gwadar', 'turbat', 'khuzdar', 'sibi'],
+      gb: ['gilgit', 'skardu', 'hunza'],
+      ajk: ['muzaffarabad', 'mirpur', 'bhimber'],
+      ict: ['islamabad']
+    };
+
     const calc = () => {
       if (tool.id === 'bricks-calc') setResult({ bricks: Math.ceil(val1 * 13.5 * (val2 || 1)), msg: "Standard 9-inch wall calculation" });
       if (tool.id === 'cement-calc') setResult({ bags: Math.ceil(val1 * 0.4), msg: "Estimated for plaster and masonry" });
@@ -316,19 +326,40 @@ const ToolDetail: React.FC = () => {
           const city = inputs.city || 'karachi';
           const table: Record<string, any> = {
             karachi: { fajr: '05:30', dhuhr: '12:30', asr: '04:00', maghrib: '06:00', isha: '07:30' },
-            lahore: { fajr: '05:15', dhuhr: '12:15', asr: '03:45', maghrib: '05:45', isha: '07:15' },
-            islamabad: { fajr: '05:10', dhuhr: '12:20', asr: '03:50', maghrib: '05:55', isha: '07:25' },
-            rawalpindi: { fajr: '05:10', dhuhr: '12:20', asr: '03:50', maghrib: '05:55', isha: '07:25' },
-            peshawar: { fajr: '05:05', dhuhr: '12:25', asr: '04:00', maghrib: '06:05', isha: '07:35' },
-            quetta: { fajr: '05:20', dhuhr: '12:40', asr: '04:10', maghrib: '06:10', isha: '07:40' },
-            multan: { fajr: '05:20', dhuhr: '12:25', asr: '03:55', maghrib: '06:00', isha: '07:30' },
-            faisalabad: { fajr: '05:15', dhuhr: '12:20', asr: '03:50', maghrib: '05:50', isha: '07:20' },
             hyderabad: { fajr: '05:25', dhuhr: '12:30', asr: '04:00', maghrib: '06:05', isha: '07:35' },
-            sialkot: { fajr: '05:10', dhuhr: '12:15', asr: '03:45', maghrib: '05:50', isha: '07:20' },
-            gujranwala: { fajr: '05:12', dhuhr: '12:18', asr: '03:48', maghrib: '05:52', isha: '07:22' },
             sukkur: { fajr: '05:25', dhuhr: '12:35', asr: '04:05', maghrib: '06:10', isha: '07:40' },
+            larkana: { fajr: '05:27', dhuhr: '12:33', asr: '04:03', maghrib: '06:08', isha: '07:38' },
+            mirpurkhas: { fajr: '05:26', dhuhr: '12:32', asr: '04:02', maghrib: '06:07', isha: '07:37' },
+            lahore: { fajr: '05:15', dhuhr: '12:15', asr: '03:45', maghrib: '05:45', isha: '07:15' },
+            rawalpindi: { fajr: '05:10', dhuhr: '12:20', asr: '03:50', maghrib: '05:55', isha: '07:25' },
+            islamabad: { fajr: '05:10', dhuhr: '12:20', asr: '03:50', maghrib: '05:55', isha: '07:25' },
+            faisalabad: { fajr: '05:15', dhuhr: '12:20', asr: '03:50', maghrib: '05:50', isha: '07:20' },
+            multan: { fajr: '05:20', dhuhr: '12:25', asr: '03:55', maghrib: '06:00', isha: '07:30' },
+            gujranwala: { fajr: '05:12', dhuhr: '12:18', asr: '03:48', maghrib: '05:52', isha: '07:22' },
+            sialkot: { fajr: '05:10', dhuhr: '12:15', asr: '03:45', maghrib: '05:50', isha: '07:20' },
             bahawalpur: { fajr: '05:20', dhuhr: '12:28', asr: '03:58', maghrib: '06:03', isha: '07:33' },
-            abbottabad: { fajr: '05:05', dhuhr: '12:22', asr: '03:55', maghrib: '06:05', isha: '07:32' }
+            sargodha: { fajr: '05:14', dhuhr: '12:19', asr: '03:49', maghrib: '05:54', isha: '07:24' },
+            rahimyar khan: { fajr: '05:22', dhuhr: '12:29', asr: '03:59', maghrib: '06:04', isha: '07:34' },
+            dera ghazi khan: { fajr: '05:18', dhuhr: '12:26', asr: '03:56', maghrib: '06:01', isha: '07:31' },
+            gujrat: { fajr: '05:12', dhuhr: '12:17', asr: '03:47', maghrib: '05:52', isha: '07:22' },
+            peshawar: { fajr: '05:05', dhuhr: '12:25', asr: '04:00', maghrib: '06:05', isha: '07:35' },
+            abbottabad: { fajr: '05:05', dhuhr: '12:22', asr: '03:55', maghrib: '06:05', isha: '07:32' },
+            mardan: { fajr: '05:06', dhuhr: '12:24', asr: '03:56', maghrib: '06:04', isha: '07:34' },
+            swat: { fajr: '05:04', dhuhr: '12:23', asr: '03:55', maghrib: '06:06', isha: '07:34' },
+            kohat: { fajr: '05:06', dhuhr: '12:24', asr: '03:57', maghrib: '06:05', isha: '07:35' },
+            'dera ismail khan': { fajr: '05:12', dhuhr: '12:28', asr: '03:58', maghrib: '06:07', isha: '07:37' },
+            mansehra: { fajr: '05:04', dhuhr: '12:22', asr: '03:55', maghrib: '06:05', isha: '07:33' },
+            quetta: { fajr: '05:20', dhuhr: '12:40', asr: '04:10', maghrib: '06:10', isha: '07:40' },
+            gwadar: { fajr: '05:32', dhuhr: '12:42', asr: '04:15', maghrib: '06:18', isha: '07:48' },
+            turbat: { fajr: '05:30', dhuhr: '12:40', asr: '04:12', maghrib: '06:15', isha: '07:45' },
+            khuzdar: { fajr: '05:24', dhuhr: '12:36', asr: '04:05', maghrib: '06:09', isha: '07:39' },
+            sibi: { fajr: '05:21', dhuhr: '12:34', asr: '04:04', maghrib: '06:08', isha: '07:38' },
+            gilgit: { fajr: '05:00', dhuhr: '12:15', asr: '03:45', maghrib: '05:50', isha: '07:20' },
+            skardu: { fajr: '04:58', dhuhr: '12:13', asr: '03:43', maghrib: '05:48', isha: '07:18' },
+            hunza: { fajr: '04:57', dhuhr: '12:12', asr: '03:42', maghrib: '05:47', isha: '07:17' },
+            muzaffarabad: { fajr: '05:05', dhuhr: '12:18', asr: '03:48', maghrib: '05:53', isha: '07:23' },
+            mirpur: { fajr: '05:08', dhuhr: '12:18', asr: '03:48', maghrib: '05:54', isha: '07:24' },
+            bhimber: { fajr: '05:08', dhuhr: '12:18', asr: '03:48', maghrib: '05:54', isha: '07:24' }
           };
           const timings = table[city];
           res = {
@@ -347,19 +378,40 @@ const ToolDetail: React.FC = () => {
           const city = inputs.city || 'karachi';
           const directions: Record<string, { deg: number; note: string }> = {
             karachi: { deg: 259, note: 'West-Northwest' },
-            lahore: { deg: 254, note: 'West' },
-            islamabad: { deg: 253, note: 'West' },
-            rawalpindi: { deg: 253, note: 'West' },
-            peshawar: { deg: 251, note: 'West-Southwest' },
-            quetta: { deg: 255, note: 'West' },
-            multan: { deg: 256, note: 'West' },
-            faisalabad: { deg: 254, note: 'West' },
             hyderabad: { deg: 258, note: 'West-Northwest' },
-            sialkot: { deg: 253, note: 'West' },
-            gujranwala: { deg: 253, note: 'West' },
             sukkur: { deg: 258, note: 'West-Northwest' },
+            larkana: { deg: 258, note: 'West-Northwest' },
+            mirpurkhas: { deg: 258, note: 'West-Northwest' },
+            lahore: { deg: 254, note: 'West' },
+            rawalpindi: { deg: 253, note: 'West' },
+            islamabad: { deg: 253, note: 'West' },
+            faisalabad: { deg: 254, note: 'West' },
+            multan: { deg: 256, note: 'West' },
+            gujranwala: { deg: 253, note: 'West' },
+            sialkot: { deg: 253, note: 'West' },
             bahawalpur: { deg: 256, note: 'West' },
-            abbottabad: { deg: 252, note: 'West' }
+            sargodha: { deg: 254, note: 'West' },
+            'rahimyar khan': { deg: 256, note: 'West' },
+            'dera ghazi khan': { deg: 256, note: 'West' },
+            gujrat: { deg: 254, note: 'West' },
+            peshawar: { deg: 251, note: 'West-Southwest' },
+            abbottabad: { deg: 252, note: 'West' },
+            mardan: { deg: 252, note: 'West' },
+            swat: { deg: 252, note: 'West' },
+            kohat: { deg: 252, note: 'West' },
+            'dera ismail khan': { deg: 252, note: 'West' },
+            mansehra: { deg: 252, note: 'West' },
+            quetta: { deg: 255, note: 'West' },
+            gwadar: { deg: 256, note: 'West' },
+            turbat: { deg: 256, note: 'West' },
+            khuzdar: { deg: 255, note: 'West' },
+            sibi: { deg: 255, note: 'West' },
+            gilgit: { deg: 251, note: 'West-Southwest' },
+            skardu: { deg: 251, note: 'West-Southwest' },
+            hunza: { deg: 251, note: 'West-Southwest' },
+            muzaffarabad: { deg: 252, note: 'West' },
+            mirpur: { deg: 252, note: 'West' },
+            bhimber: { deg: 252, note: 'West' }
           };
           const dir = directions[city];
           res = {
@@ -461,41 +513,41 @@ const ToolDetail: React.FC = () => {
         )}
 
         {tool.id === 'prayer-times' && (
-          <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, city: e.target.value })} defaultValue="karachi">
-            <option value="karachi">Karachi</option>
-            <option value="lahore">Lahore</option>
-            <option value="islamabad">Islamabad</option>
-            <option value="rawalpindi">Rawalpindi</option>
-            <option value="peshawar">Peshawar</option>
-            <option value="quetta">Quetta</option>
-            <option value="multan">Multan</option>
-            <option value="faisalabad">Faisalabad</option>
-            <option value="hyderabad">Hyderabad</option>
-            <option value="sialkot">Sialkot</option>
-            <option value="gujranwala">Gujranwala</option>
-            <option value="sukkur">Sukkur</option>
-            <option value="bahawalpur">Bahawalpur</option>
-            <option value="abbottabad">Abbottabad</option>
-          </select>
+          <>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, province: e.target.value, city: provinceCityMap[e.target.value][0] })} defaultValue="sindh">
+              <option value="sindh">Sindh</option>
+              <option value="punjab">Punjab</option>
+              <option value="kpk">Khyber Pakhtunkhwa</option>
+              <option value="balochistan">Balochistan</option>
+              <option value="gb">Gilgit-Baltistan</option>
+              <option value="ajk">Azad Jammu & Kashmir</option>
+              <option value="ict">Islamabad Capital Territory</option>
+            </select>
+            <select className="w-full border p-4 rounded-xl" value={inputs.city || 'karachi'} onChange={e => setInputs({ ...inputs, city: e.target.value })}>
+              {(provinceCityMap[inputs.province || 'sindh'] || []).map((c) => (
+                <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+              ))}
+            </select>
+          </>
         )}
 
         {tool.id === 'qibla-dir' && (
-          <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, city: e.target.value })} defaultValue="karachi">
-            <option value="karachi">Karachi</option>
-            <option value="lahore">Lahore</option>
-            <option value="islamabad">Islamabad</option>
-            <option value="rawalpindi">Rawalpindi</option>
-            <option value="peshawar">Peshawar</option>
-            <option value="quetta">Quetta</option>
-            <option value="multan">Multan</option>
-            <option value="faisalabad">Faisalabad</option>
-            <option value="hyderabad">Hyderabad</option>
-            <option value="sialkot">Sialkot</option>
-            <option value="gujranwala">Gujranwala</option>
-            <option value="sukkur">Sukkur</option>
-            <option value="bahawalpur">Bahawalpur</option>
-            <option value="abbottabad">Abbottabad</option>
-          </select>
+          <>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, province: e.target.value, city: provinceCityMap[e.target.value][0] })} defaultValue="sindh">
+              <option value="sindh">Sindh</option>
+              <option value="punjab">Punjab</option>
+              <option value="kpk">Khyber Pakhtunkhwa</option>
+              <option value="balochistan">Balochistan</option>
+              <option value="gb">Gilgit-Baltistan</option>
+              <option value="ajk">Azad Jammu & Kashmir</option>
+              <option value="ict">Islamabad Capital Territory</option>
+            </select>
+            <select className="w-full border p-4 rounded-xl" value={inputs.city || 'karachi'} onChange={e => setInputs({ ...inputs, city: e.target.value })}>
+              {(provinceCityMap[inputs.province || 'sindh'] || []).map((c) => (
+                <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+              ))}
+            </select>
+          </>
         )}
 
         {tool.id === 'hijri-conv' && (
