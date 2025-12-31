@@ -6,6 +6,10 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import ToolDetail from './pages/ToolDetail';
 import LegalPage from './pages/LegalPage';
+import AboutUs from './pages/AboutUs';
+import ContactUs from './pages/ContactUs';
+import Disclaimer from './pages/Disclaimer';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import AgeCalculator from './pages/AgeCalculator';
 import BMICalculator from './pages/BMICalculator';
 import PercentageCalculator from './pages/PercentageCalculator';
@@ -28,12 +32,14 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             
+
             {/* Legal Pages */}
-            <Route path="/privacy-policy" element={<LegalPage title="Privacy Policy" />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            {/* Terms and Conditions can remain as LegalPage if not custom */}
             <Route path="/terms-and-conditions" element={<LegalPage title="Terms and Conditions" />} />
-            <Route path="/disclaimer" element={<LegalPage title="Disclaimer" />} />
-            <Route path="/about-us" element={<LegalPage title="About Us" />} />
-            <Route path="/contact-us" element={<LegalPage title="Contact Us" />} />
 
             {/* Dedicated Calculator Routes */}
             <Route path="/age-calculator" element={<AgeCalculator />} />
