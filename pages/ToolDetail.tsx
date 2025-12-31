@@ -2263,6 +2263,385 @@ const ToolDetail: React.FC = () => {
     );
   };
 
+  // --- ENGINE: Banking & Payments ---
+  const BankingEngine = () => {
+    const [inputs, setInputs] = useState<any>({});
+
+    const calc = () => {
+      let res: any = {};
+
+      switch (tool.id) {
+        case 'bank-profit': {
+          const balance = Number(inputs.balance);
+          const ratePerYear = Number(inputs.ratePerYear);
+          const months = Number(inputs.months) || 1;
+          if (!balance || !ratePerYear) { alert('Enter balance and rate'); return; }
+          
+          const monthlyRate = ratePerYear / 12 / 100;
+          const interest = balance * monthlyRate * months;
+          const totalBalance = balance + interest;
+          
+          res = {
+            principalBalance: `Rs. ${balance.toLocaleString()}`,
+            annualRate: `${ratePerYear}%`,
+            monthlyRate: `${(monthlyRate * 100).toFixed(3)}%`,
+            period: `${months} month(s)`,
+            totalInterest: `Rs. ${interest.toFixed(0).toLocaleString()}`,
+            totalBalance: `Rs. ${totalBalance.toFixed(0).toLocaleString()}`,
+            msg: 'Bank interest on savings account balance'
+          };
+          break;
+        }
+
+        case 'savings-calc': {
+          const initialAmount = Number(inputs.initialAmount);
+          const monthlyContribution = Number(inputs.monthlyContribution);
+          const annualRate = Number(inputs.annualRate);
+          const years = Number(inputs.years);
+          
+          if (!initialAmount || !monthlyContribution || !annualRate || !years) { alert('Enter all values'); return; }
+          
+          const months = years * 12;
+          const monthlyRate = annualRate / 12 / 100;
+          const fv = initialAmount * Math.pow(1 + monthlyRate, months) + monthlyContribution * (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate;
+          const totalContributed = initialAmount + (monthlyContribution * months);
+          const interest = fv - totalContributed;
+          
+          res = {
+            initialAmount: `Rs. ${initialAmount.toLocaleString()}`,
+            monthlyContribution: `Rs. ${monthlyContribution.toLocaleString()}`,
+            period: `${years} years (${months} months)`,
+            annualRate: `${annualRate}%`,
+            futureValue: `Rs. ${fv.toFixed(0).toLocaleString()}`,
+            totalContributed: `Rs. ${totalContributed.toLocaleString()}`,
+            earnedInterest: `Rs. ${interest.toFixed(0).toLocaleString()}`,
+            msg: 'Savings growth with compound interest'
+          };
+          break;
+        }
+
+        case 'islamic-profit': {
+          const amount = Number(inputs.amount);
+          const rate = Number(inputs.rate);
+          const months = Number(inputs.months) || 1;
+          
+          if (!amount || !rate) { alert('Enter amount and rate'); return; }
+          
+          const monthlyRate = rate / 12 / 100;
+          const profit = amount * monthlyRate * months;
+          
+          res = {
+            principalAmount: `Rs. ${amount.toLocaleString()}`,
+            profitRate: `${rate}% (Shariah-compliant)`,
+            period: `${months} month(s)`,
+            profit: `Rs. ${profit.toFixed(0).toLocaleString()}`,
+            totalAmount: `Rs. ${(amount + profit).toFixed(0).toLocaleString()}`,
+            msg: 'Riba-free profit as per Islamic finance principles'
+          };
+          break;
+        }
+
+        case 'cc-interest': {
+          const balance = Number(inputs.balance);
+          const rate = Number(inputs.rate) || 3;
+          const months = Number(inputs.months) || 1;
+          const payment = Number(inputs.payment) || 0;
+          
+          if (!balance) { alert('Enter balance'); return; }
+          
+          const monthlyRate = rate / 12 / 100;
+          let remainingBalance = balance;
+          let totalInterest = 0;
+          
+          for (let i = 0; i < months; i++) {
+            const interest = remainingBalance * monthlyRate;
+            totalInterest += interest;
+            remainingBalance = remainingBalance - payment + interest;
+            if (remainingBalance < 0) remainingBalance = 0;
+          }
+          
+          res = {
+            initialBalance: `Rs. ${balance.toLocaleString()}`,
+            monthlyRate: `${rate}% (Annual)`,
+            monthlyPayment: `Rs. ${payment.toLocaleString()}`,
+            period: `${months} month(s)`,
+            totalInterestCharged: `Rs. ${totalInterest.toFixed(0).toLocaleString()}`,
+            finalBalance: `Rs. ${Math.max(0, remainingBalance).toFixed(0).toLocaleString()}`,
+            msg: 'Credit card interest with minimum payments'
+          };
+          break;
+        }
+
+        case 'atm-plan': {
+          const needed = Number(inputs.needed);
+          const feePerWithdraw = Number(inputs.feePerWithdraw) || 20;
+          const atmLimit = Number(inputs.atmLimit) || 50000;
+          
+          if (!needed) { alert('Enter amount needed'); return; }
+          
+          const numWithdrawals = Math.ceil(needed / atmLimit);
+          const totalFees = numWithdrawals * feePerWithdraw;
+          const actualWithdrawn = numWithdrawals * atmLimit;
+          
+          res = {
+            amountNeeded: `Rs. ${needed.toLocaleString()}`,
+            atmLimit: `Rs. ${atmLimit.toLocaleString()}`,
+            numWithdrawals: numWithdrawals,
+            feePerWithdraw: `Rs. ${feePerWithdraw}`,
+            totalFees: `Rs. ${totalFees.toLocaleString()}`,
+            totalWithdrawn: `Rs. ${actualWithdrawn.toLocaleString()}`,
+            surplus: `Rs. ${(actualWithdrawn - needed).toLocaleString()}`,
+            msg: 'Plan withdrawals to minimize fees'
+          };
+          break;
+        }
+
+        case 'loan-eligibility': {
+          const monthlyIncome = Number(inputs.monthlyIncome);
+          const existingLoans = Number(inputs.existingLoans) || 0;
+          const tenure = Number(inputs.tenure) || 5;
+          
+          if (!monthlyIncome) { alert('Enter monthly income'); return; }
+          
+          const debtToIncomeRatio = existingLoans / (monthlyIncome * 12);
+          const maxEligible = monthlyIncome * 12 * (1 - debtToIncomeRatio);
+          const maxMonthly = (monthlyIncome * 0.40) - (existingLoans / 12);
+          const loanAmount = maxMonthly * tenure * 12;
+          
+          const eligible = debtToIncomeRatio < 0.40 && maxMonthly > 0;
+          
+          res = {
+            monthlyIncome: `Rs. ${monthlyIncome.toLocaleString()}`,
+            annualIncome: `Rs. ${(monthlyIncome * 12).toLocaleString()}`,
+            existingLoans: `Rs. ${existingLoans.toLocaleString()}`,
+            debtToIncomeRatio: `${(debtToIncomeRatio * 100).toFixed(1)}%`,
+            eligible: eligible ? 'YES - You may be eligible' : 'NO - High debt burden',
+            estimatedMaxLoan: `Rs. ${Math.max(0, loanAmount).toFixed(0).toLocaleString()}`,
+            msg: 'Eligibility is subject to bank approval and credit score'
+          };
+          break;
+        }
+
+        case 'mortgage-calc': {
+          const homePrice = Number(inputs.homePrice);
+          const downPayment = Number(inputs.downPayment);
+          const rate = Number(inputs.rate);
+          const years = Number(inputs.years);
+          
+          if (!homePrice || !downPayment || !rate || !years) { alert('Enter all values'); return; }
+          
+          const principal = homePrice - downPayment;
+          const monthlyRate = rate / 12 / 100;
+          const months = years * 12;
+          const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+          const totalPayable = emi * months;
+          const totalInterest = totalPayable - principal;
+          
+          res = {
+            homePrice: `Rs. ${homePrice.toLocaleString()}`,
+            downPayment: `Rs. ${downPayment.toLocaleString()}`,
+            loanAmount: `Rs. ${principal.toLocaleString()}`,
+            interestRate: `${rate}%`,
+            tenure: `${years} years (${months} months)`,
+            monthlyEMI: `Rs. ${emi.toFixed(0).toLocaleString()}`,
+            totalPayable: `Rs. ${totalPayable.toFixed(0).toLocaleString()}`,
+            totalInterest: `Rs. ${totalInterest.toFixed(0).toLocaleString()}`,
+            msg: 'Mortgage calculation with reducing balance EMI'
+          };
+          break;
+        }
+
+        case 'bank-charges': {
+          const monthlyBalance = Number(inputs.monthlyBalance);
+          const transactions = Number(inputs.transactions) || 0;
+          const chequesPassed = Number(inputs.chequesPassed) || 0;
+          
+          if (!monthlyBalance) { alert('Enter monthly balance'); return; }
+          
+          let charges = 0;
+          if (monthlyBalance < 100000) charges += 500;
+          else if (monthlyBalance < 500000) charges += 300;
+          else charges += 100;
+          
+          const transactionCharges = Math.max(0, transactions - 50) * 5;
+          const chequeCharges = chequesPassed * 25;
+          
+          const totalCharges = charges + transactionCharges + chequeCharges;
+          
+          res = {
+            monthlyBalance: `Rs. ${monthlyBalance.toLocaleString()}`,
+            maintenanceFee: `Rs. ${charges}`,
+            extraTransactionFee: `Rs. ${transactionCharges}`,
+            chequeProcessingFee: `Rs. ${chequeCharges}`,
+            totalMonthlyCharges: `Rs. ${totalCharges}`,
+            annualCharges: `Rs. ${(totalCharges * 12).toLocaleString()}`,
+            msg: 'Bank charges vary by bank; this is an estimate'
+          };
+          break;
+        }
+
+        case 'remittance-fee': {
+          const amount = Number(inputs.amount);
+          const country = inputs.country || 'USA';
+          
+          if (!amount) { alert('Enter amount'); return; }
+          
+          const feePercentage: Record<string, number> = {
+            'USA': 0.02,
+            'UK': 0.025,
+            'UAE': 0.015,
+            'Saudi': 0.01,
+            'Other': 0.035
+          };
+          
+          const fee = amount * (feePercentage[country] || 0.02);
+          const netAmount = amount - fee;
+          const conversionRate = country === 'USA' ? 278 : country === 'UK' ? 350 : 76;
+          const netInPKR = netAmount * conversionRate;
+          
+          res = {
+            sendingAmount: `${country} ${(amount / conversionRate).toFixed(2)}`,
+            remittanceFee: `${((feePercentage[country] || 0.02) * 100).toFixed(1)}%`,
+            feeAmount: `${(fee / conversionRate).toFixed(2)} ${country}`,
+            netAmountSent: `${(netAmount / conversionRate).toFixed(2)} ${country}`,
+            approxPKR: `Rs. ${netInPKR.toFixed(0).toLocaleString()}`,
+            msg: 'Rates vary by bank and destination'
+          };
+          break;
+        }
+
+        case 'emi-compare': {
+          const loanAmount = Number(inputs.loanAmount);
+          
+          if (!loanAmount) { alert('Enter loan amount'); return; }
+          
+          const scenarios = [
+            { months: 12, rate: 14 },
+            { months: 24, rate: 13 },
+            { months: 36, rate: 12 },
+            { months: 60, rate: 11 }
+          ];
+          
+          const comparisons = scenarios.map(scenario => {
+            const monthlyRate = scenario.rate / 12 / 100;
+            const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, scenario.months)) / (Math.pow(1 + monthlyRate, scenario.months) - 1);
+            const totalPayable = emi * scenario.months;
+            const interest = totalPayable - loanAmount;
+            return {
+              months: scenario.months,
+              rate: scenario.rate,
+              emi: emi.toFixed(0),
+              totalPayable: totalPayable.toFixed(0),
+              totalInterest: interest.toFixed(0)
+            };
+          });
+          
+          res = {
+            loanAmount: `Rs. ${loanAmount.toLocaleString()}`,
+            comparison: comparisons.map(c => `${c.months}m @ ${c.rate}%: EMI Rs.${c.emi}/mo, Total Int: Rs.${c.totalInterest}`).join(' | '),
+            msg: '1 year: Higher EMI, lower interest | 5 years: Lower EMI, higher interest'
+          };
+          break;
+        }
+
+        default:
+          res = { msg: 'Calculation not available' };
+      }
+
+      setResult(res);
+    };
+
+    return (
+      <div className="space-y-4">
+        {tool.id === 'bank-profit' && (
+          <>
+            <input type="number" placeholder="Balance (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, balance: e.target.value })} />
+            <input type="number" placeholder="Annual Rate (%)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, ratePerYear: e.target.value })} />
+            <input type="number" placeholder="Months" className="w-full border p-4 rounded-xl" defaultValue={1} onChange={e => setInputs({ ...inputs, months: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'savings-calc' && (
+          <>
+            <input type="number" placeholder="Initial Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, initialAmount: e.target.value })} />
+            <input type="number" placeholder="Monthly Contribution (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, monthlyContribution: e.target.value })} />
+            <input type="number" placeholder="Annual Rate (%)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, annualRate: e.target.value })} />
+            <input type="number" placeholder="Years" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, years: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'islamic-profit' && (
+          <>
+            <input type="number" placeholder="Principal Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, amount: e.target.value })} />
+            <input type="number" placeholder="Profit Rate (%) p.a." className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, rate: e.target.value })} />
+            <input type="number" placeholder="Months" className="w-full border p-4 rounded-xl" defaultValue={1} onChange={e => setInputs({ ...inputs, months: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'cc-interest' && (
+          <>
+            <input type="number" placeholder="Credit Card Balance (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, balance: e.target.value })} />
+            <input type="number" placeholder="Annual Interest Rate (%)" className="w-full border p-4 rounded-xl" defaultValue={3} onChange={e => setInputs({ ...inputs, rate: e.target.value })} />
+            <input type="number" placeholder="Monthly Payment (PKR)" className="w-full border p-4 rounded-xl" defaultValue={0} onChange={e => setInputs({ ...inputs, payment: e.target.value })} />
+            <input type="number" placeholder="Months" className="w-full border p-4 rounded-xl" defaultValue={1} onChange={e => setInputs({ ...inputs, months: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'atm-plan' && (
+          <>
+            <input type="number" placeholder="Amount Needed (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, needed: e.target.value })} />
+            <input type="number" placeholder="ATM Daily Limit (PKR)" className="w-full border p-4 rounded-xl" defaultValue={50000} onChange={e => setInputs({ ...inputs, atmLimit: e.target.value })} />
+            <input type="number" placeholder="Fee per Withdrawal (PKR)" className="w-full border p-4 rounded-xl" defaultValue={20} onChange={e => setInputs({ ...inputs, feePerWithdraw: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'loan-eligibility' && (
+          <>
+            <input type="number" placeholder="Monthly Income (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, monthlyIncome: e.target.value })} />
+            <input type="number" placeholder="Existing Loans (PKR)" className="w-full border p-4 rounded-xl" defaultValue={0} onChange={e => setInputs({ ...inputs, existingLoans: e.target.value })} />
+            <input type="number" placeholder="Desired Tenure (Years)" className="w-full border p-4 rounded-xl" defaultValue={5} onChange={e => setInputs({ ...inputs, tenure: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'mortgage-calc' && (
+          <>
+            <input type="number" placeholder="Home Price (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, homePrice: e.target.value })} />
+            <input type="number" placeholder="Down Payment (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, downPayment: e.target.value })} />
+            <input type="number" placeholder="Interest Rate (%) p.a." className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, rate: e.target.value })} />
+            <input type="number" placeholder="Tenure (Years)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, years: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'bank-charges' && (
+          <>
+            <input type="number" placeholder="Monthly Balance (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, monthlyBalance: e.target.value })} />
+            <input type="number" placeholder="Transactions per Month" className="w-full border p-4 rounded-xl" defaultValue={0} onChange={e => setInputs({ ...inputs, transactions: e.target.value })} />
+            <input type="number" placeholder="Cheques Passed per Month" className="w-full border p-4 rounded-xl" defaultValue={0} onChange={e => setInputs({ ...inputs, chequesPassed: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'remittance-fee' && (
+          <>
+            <input type="number" placeholder="Amount to Send" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, amount: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, country: e.target.value })} defaultValue="USA">
+              <option value="USA">USA</option>
+              <option value="UK">United Kingdom</option>
+              <option value="UAE">UAE / Gulf</option>
+              <option value="Saudi">Saudi Arabia</option>
+              <option value="Other">Other Countries</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'emi-compare' && (
+          <input type="number" placeholder="Loan Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, loanAmount: e.target.value })} />
+        )}
+
+        <button onClick={calc} className="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold hover:bg-emerald-800 transition">Calculate</button>
+      </div>
+    );
+  };
+
   const renderInstructions = () => {
     const defaultSteps = ["Enter the required numerical value.", "Press the calculate/convert button.", "View the results in the box below."];
     const instructionsMap: Record<string, string[]> = {
@@ -2314,6 +2693,7 @@ const ToolDetail: React.FC = () => {
     if (tool.category === 'Vehicle Tools') return <VehicleEngine />;
     if (tool.category === 'Daily Life') return <DailyLifeEngine />;
     if (tool.category === 'Conversion') return <ConversionEngine />;
+    if (tool.category === 'Banking & Payments') return <BankingEngine />;
 
     return (
       <div className="text-center p-8 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
