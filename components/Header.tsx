@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Logo from '../Logo.png';
 import { Link } from 'react-router-dom';
 
 const Header: React.FC = () => {
@@ -7,7 +8,7 @@ const Header: React.FC = () => {
     <header className="bg-emerald-700 text-white sticky top-0 z-50 shadow-md">
       <div className="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
         <Link to="/" className="flex items-center space-x-2" aria-label="Pak Utility Tools Home">
-          <img src={require('../Logo.png')} alt="Pak Utility Tools Logo" className="w-10 h-10 rounded shadow bg-white object-contain" />
+          <img src={Logo} alt="Pak Utility Tools Logo" className="w-10 h-10 rounded shadow bg-white object-contain" />
           <span className="text-2xl font-bold tracking-tight ml-2">PakUtility<span className="text-emerald-200">Tools</span></span>
         </Link>
         <nav className="hidden md:flex space-x-6 font-medium">
