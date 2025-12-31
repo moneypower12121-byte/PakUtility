@@ -8,6 +8,7 @@ import ElectricityBill from './ElectricityBill';
 import SalaryTax from './SalaryTax';
 import ZakatCalc from './ZakatCalc';
 import PropertyTax from './PropertyTax';
+import GasBillCalculator from './GasBillCalculator';
 
 const ToolDetail: React.FC = () => {
   const { slug } = useParams();
@@ -29,8 +30,32 @@ const ToolDetail: React.FC = () => {
       let res: any = {};
       const rate = inputs.rate || 35; // Default unit rate
 
+      // Basic validation to avoid NaN outputs
+      const require = (fields: string[]) => fields.every((f) => inputs[f] !== undefined && inputs[f] !== null && inputs[f] !== '' && !isNaN(inputs[f]));
+
       switch (tool.id) {
+        case 'gas-bill': {
+          if (!require(['units'])) { alert('Enter gas units consumed (MMBTU)'); return; }
+          let cost = 0;
+          let remaining = Number(inputs.units);
+          if (remaining > 0) { const slab = Math.min(remaining, 0.5); cost += slab * 121; remaining -= slab; }
+          if (remaining > 0) { const slab = Math.min(remaining, 0.5); cost += slab * 244; remaining -= slab; }
+          if (remaining > 0) { const slab = Math.min(remaining, 1);   cost += slab * 409; remaining -= slab; }
+          if (remaining > 0) { const slab = Math.min(remaining, 1);   cost += slab * 590; remaining -= slab; }
+          if (remaining > 0) { cost += remaining * 775; }
+          const gst = cost * 0.17;
+          const meterRent = 50;
+          res = {
+            gasCost: `Rs. ${cost.toFixed(0)}`,
+            gst: `Rs. ${gst.toFixed(0)}`,
+            meterRent: `Rs. ${meterRent.toFixed(0)}`,
+            total: `Rs. ${(cost + gst + meterRent).toFixed(0)}`,
+            msg: 'Domestic SNGPL/SSGC slab estimate with 17% GST.'
+          };
+          break;
+        }
         case 'water-bill':
+          if (!require(['units'])) { alert('Enter water units consumed'); return; }
           const waterBase = inputs.units * (inputs.city === 'Karachi' ? 1.5 : 1.2);
           res = { 
             estimatedBill: `Rs. ${(waterBase * 1.3).toFixed(0)}`, 
@@ -39,6 +64,7 @@ const ToolDetail: React.FC = () => {
           };
           break;
         case 'solar-save':
+          if (!require(['kw'])) { alert('Enter solar system size (kW)'); return; }
           const gen = inputs.kw * (inputs.hours || 5) * 30;
           res = { 
             monthlyGeneration: `${gen.toFixed(0)} kWh`, 
@@ -47,6 +73,7 @@ const ToolDetail: React.FC = () => {
           };
           break;
         case 'ups-load':
+          if (!require(['fans', 'lights'])) { alert('Enter number of fans and lights'); return; }
           const load = (inputs.fans * 80) + (inputs.lights * 20) + (inputs.other || 0);
           res = { 
             totalLoad: `${load} Watts`, 
@@ -55,6 +82,7 @@ const ToolDetail: React.FC = () => {
           };
           break;
         case 'gen-fuel':
+          if (!require(['kva', 'price'])) { alert('Enter generator kVA and fuel price'); return; }
           const consumption = inputs.kva * (inputs.fuel === 'Diesel' ? 0.3 : 0.45);
           res = { 
             hourlyConsumption: `${consumption.toFixed(2)} Litres`, 
@@ -63,6 +91,7 @@ const ToolDetail: React.FC = () => {
           };
           break;
         case 'ac-power':
+          if (!require(['watts', 'hours'])) { alert('Enter wattage and daily hours'); return; }
           const acUnits = (inputs.watts / 1000) * inputs.hours * 30;
           res = { 
             monthlyUnits: `${acUnits.toFixed(0)} Units`, 
@@ -71,6 +100,7 @@ const ToolDetail: React.FC = () => {
           };
           break;
         case 'fridge-power':
+          if (!require(['watts'])) { alert('Enter fridge wattage'); return; }
           const fUnits = (inputs.watts / 1000) * 24 * 0.5 * 30; // 50% duty cycle
           res = { 
             monthlyUnits: `${fUnits.toFixed(0)} Units`, 
@@ -79,6 +109,7 @@ const ToolDetail: React.FC = () => {
           };
           break;
         case 'net-usage':
+          if (!require(['activity', 'hours'])) { alert('Select activity and hours'); return; }
           const gbMap: any = { 'HD Streaming': 3, 'Browsing': 0.2, 'Gaming': 0.05, 'Social Media': 0.5 };
           const daily = (gbMap[inputs.activity] || 1) * inputs.hours;
           res = { 
@@ -88,6 +119,7 @@ const ToolDetail: React.FC = () => {
           };
           break;
         case 'load-shedding':
+          if (!require(['hours'])) { alert('Enter daily outage hours'); return; }
           res = { 
             dailyOutage: `${inputs.hours} Hours`, 
             monthlyDarkness: `${inputs.hours * 30} Hours`,
@@ -100,6 +132,9 @@ const ToolDetail: React.FC = () => {
 
     return (
       <div className="space-y-4">
+        {tool.id === 'gas-bill' && (
+          <input type="number" placeholder="Gas Units (MMBTU)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, units: Number(e.target.value)})} />
+        )}
         {tool.id === 'water-bill' && (
           <>
             <input type="number" placeholder="Units Consumed (Cubic Meters)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, units: Number(e.target.value)})} />
@@ -232,6 +267,7 @@ const ToolDetail: React.FC = () => {
   const renderLogic = () => {
     if (tool.id === 'cnic-check') return <CNICChecker />;
     if (tool.id === 'elec-bill') return <ElectricityBill />;
+    if (tool.id === 'gas-bill') return <GasBillCalculator />;
     if (tool.id === 'salary-tax') return <SalaryTax />;
     if (tool.id === 'zakat-calc') return <ZakatCalc />;
     if (tool.id === 'property-tax') return <PropertyTax />;
@@ -244,8 +280,23 @@ const ToolDetail: React.FC = () => {
       <div className="text-center p-8 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
         <p className="text-gray-500 italic mb-4">Input data to calculate {tool.name}</p>
         <div className="max-w-xs mx-auto space-y-4">
-          <input type="number" className="w-full border p-4 rounded-xl" placeholder="Enter Value" />
-          <button className="w-full bg-emerald-600 text-white p-4 rounded-xl font-bold" onClick={() => setResult({ status: "Processed", msg: "Calculated based on 2024 Pakistan averages." })}>Calculate</button>
+          <input
+            type="number"
+            className="w-full border p-4 rounded-xl"
+            placeholder="Enter Value"
+            onChange={(e) => setResult({ status: "Processed", value: Number(e.target.value), msg: "Calculated based on 2024 Pakistan averages." })}
+          />
+          <button
+            className="w-full bg-emerald-600 text-white p-4 rounded-xl font-bold"
+            onClick={() => {
+              if (!result || result.value === undefined || isNaN(result.value)) {
+                alert('Please enter a value first');
+                return;
+              }
+            }}
+          >
+            Calculate
+          </button>
         </div>
       </div>
     );
