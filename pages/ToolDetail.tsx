@@ -1796,6 +1796,473 @@ const ToolDetail: React.FC = () => {
     );
   };
 
+  // --- ENGINE: Conversion ---
+  const ConversionEngine = () => {
+    const [inputs, setInputs] = useState<any>({});
+
+    const calc = () => {
+      let res: any = {};
+
+      switch (tool.id) {
+        case 'currency-conv': {
+          const pkr = Number(inputs.pkr);
+          const rate = Number(inputs.rate) || 278;
+          if (!pkr || pkr <= 0) { alert('Enter amount in PKR'); return; }
+          const foreign = pkr / rate;
+          res = {
+            pkaAmount: `Rs. ${pkr.toLocaleString()}`,
+            exchangeRate: `1 USD = Rs. ${rate}`,
+            convertedAmount: `${foreign.toFixed(2)} USD`,
+            msg: 'Exchange rates vary; check current rates with banks'
+          };
+          break;
+        }
+
+        case 'gold-price': {
+          const tolas = Number(inputs.tolas);
+          const pricePerTola = Number(inputs.pricePerTola) || 255000;
+          if (!tolas || tolas <= 0) { alert('Enter tolas'); return; }
+          const totalPrice = tolas * pricePerTola;
+          const grams = tolas * 11.664;
+          res = {
+            tolas: tolas,
+            gramsEquivalent: `${grams.toFixed(2)} grams`,
+            pricePerTola: `Rs. ${pricePerTola.toLocaleString()}`,
+            totalPrice: `Rs. ${totalPrice.toLocaleString()}`,
+            msg: '1 Tola = 11.664 grams; prices updated daily'
+          };
+          break;
+        }
+
+        case 'len-conv': {
+          const value = Number(inputs.value);
+          const fromUnit = inputs.fromUnit || 'km';
+          const toUnit = inputs.toUnit || 'miles';
+          if (!value || value <= 0) { alert('Enter value'); return; }
+          
+          const kmToMiles = 0.621371;
+          const kmToMeter = 1000;
+          const meterToFeet = 3.28084;
+          
+          let result = 0;
+          let desc = '';
+          
+          if (fromUnit === 'km' && toUnit === 'miles') { result = value * kmToMiles; desc = `km → miles`; }
+          else if (fromUnit === 'miles' && toUnit === 'km') { result = value / kmToMiles; desc = `miles → km`; }
+          else if (fromUnit === 'meter' && toUnit === 'feet') { result = value * meterToFeet; desc = `m → feet`; }
+          else if (fromUnit === 'feet' && toUnit === 'meter') { result = value / meterToFeet; desc = `feet → m`; }
+          else if (fromUnit === 'cm' && toUnit === 'inches') { result = value / 2.54; desc = `cm → inches`; }
+          else if (fromUnit === 'inches' && toUnit === 'cm') { result = value * 2.54; desc = `inches → cm`; }
+          else { result = value; }
+          
+          res = {
+            input: `${value} ${fromUnit}`,
+            output: `${result.toFixed(3)} ${toUnit}`,
+            conversion: desc,
+            msg: 'Accurate length conversion'
+          };
+          break;
+        }
+
+        case 'weight-conv': {
+          const value = Number(inputs.value);
+          const fromUnit = inputs.fromUnit || 'kg';
+          const toUnit = inputs.toUnit || 'lbs';
+          if (!value || value <= 0) { alert('Enter value'); return; }
+          
+          let result = 0;
+          let desc = '';
+          
+          if (fromUnit === 'kg' && toUnit === 'lbs') { result = value * 2.20462; desc = `kg → lbs`; }
+          else if (fromUnit === 'lbs' && toUnit === 'kg') { result = value / 2.20462; desc = `lbs → kg`; }
+          else if (fromUnit === 'gram' && toUnit === 'tola') { result = value / 11.664; desc = `g → tola`; }
+          else if (fromUnit === 'tola' && toUnit === 'gram') { result = value * 11.664; desc = `tola → g`; }
+          else if (fromUnit === 'kg' && toUnit === 'gram') { result = value * 1000; desc = `kg → g`; }
+          else if (fromUnit === 'gram' && toUnit === 'kg') { result = value / 1000; desc = `g → kg`; }
+          else { result = value; }
+          
+          res = {
+            input: `${value} ${fromUnit}`,
+            output: `${result.toFixed(3)} ${toUnit}`,
+            conversion: desc,
+            msg: 'Weight conversion for everyday use'
+          };
+          break;
+        }
+
+        case 'area-conv': {
+          const value = Number(inputs.value);
+          const fromUnit = inputs.fromUnit || 'sqft';
+          const toUnit = inputs.toUnit || 'sqm';
+          if (!value || value <= 0) { alert('Enter value'); return; }
+          
+          let result = 0;
+          let desc = '';
+          
+          if (fromUnit === 'sqft' && toUnit === 'sqm') { result = value / 10.764; desc = `sq ft → sq m`; }
+          else if (fromUnit === 'sqm' && toUnit === 'sqft') { result = value * 10.764; desc = `sq m → sq ft`; }
+          else if (fromUnit === 'marla' && toUnit === 'kanal') { result = value / 20; desc = `marla → kanal`; }
+          else if (fromUnit === 'kanal' && toUnit === 'marla') { result = value * 20; desc = `kanal → marla`; }
+          else if (fromUnit === 'marla' && toUnit === 'sqft') { result = value * 272.25; desc = `marla → sq ft`; }
+          else if (fromUnit === 'sqft' && toUnit === 'marla') { result = value / 272.25; desc = `sq ft → marla`; }
+          else { result = value; }
+          
+          res = {
+            input: `${value} ${fromUnit}`,
+            output: `${result.toFixed(3)} ${toUnit}`,
+            conversion: desc,
+            msg: 'Pakistan property measurements: 1 Kanal = 20 Marlas'
+          };
+          break;
+        }
+
+        case 'volume-conv': {
+          const value = Number(inputs.value);
+          const fromUnit = inputs.fromUnit || 'liter';
+          const toUnit = inputs.toUnit || 'gallon';
+          if (!value || value <= 0) { alert('Enter value'); return; }
+          
+          let result = 0;
+          let desc = '';
+          
+          if (fromUnit === 'liter' && toUnit === 'gallon') { result = value / 3.785; desc = `liter → gallon`; }
+          else if (fromUnit === 'gallon' && toUnit === 'liter') { result = value * 3.785; desc = `gallon → liter`; }
+          else if (fromUnit === 'ml' && toUnit === 'liter') { result = value / 1000; desc = `ml → liter`; }
+          else if (fromUnit === 'liter' && toUnit === 'ml') { result = value * 1000; desc = `liter → ml`; }
+          else { result = value; }
+          
+          res = {
+            input: `${value} ${fromUnit}`,
+            output: `${result.toFixed(3)} ${toUnit}`,
+            conversion: desc,
+            msg: 'Volume conversion for liquids'
+          };
+          break;
+        }
+
+        case 'speed-conv': {
+          const value = Number(inputs.value);
+          const fromUnit = inputs.fromUnit || 'kmh';
+          const toUnit = inputs.toUnit || 'mph';
+          if (!value || value <= 0) { alert('Enter value'); return; }
+          
+          let result = 0;
+          let desc = '';
+          
+          if (fromUnit === 'kmh' && toUnit === 'mph') { result = value / 1.60934; desc = `km/h → mph`; }
+          else if (fromUnit === 'mph' && toUnit === 'kmh') { result = value * 1.60934; desc = `mph → km/h`; }
+          else if (fromUnit === 'kmh' && toUnit === 'mps') { result = value / 3.6; desc = `km/h → m/s`; }
+          else if (fromUnit === 'mps' && toUnit === 'kmh') { result = value * 3.6; desc = `m/s → km/h`; }
+          else { result = value; }
+          
+          res = {
+            input: `${value} ${fromUnit}`,
+            output: `${result.toFixed(3)} ${toUnit}`,
+            conversion: desc,
+            msg: 'Speed conversion'
+          };
+          break;
+        }
+
+        case 'temp-conv': {
+          const value = Number(inputs.value);
+          const type = inputs.type || 'c2f';
+          if (isNaN(value)) { alert('Enter temperature'); return; }
+          
+          let result = 0;
+          let fromUnit = '';
+          let toUnit = '';
+          
+          if (type === 'c2f') {
+            result = (value * 9/5) + 32;
+            fromUnit = '°C';
+            toUnit = '°F';
+          } else if (type === 'f2c') {
+            result = (value - 32) * 5/9;
+            fromUnit = '°F';
+            toUnit = '°C';
+          } else if (type === 'c2k') {
+            result = value + 273.15;
+            fromUnit = '°C';
+            toUnit = 'K';
+          } else if (type === 'k2c') {
+            result = value - 273.15;
+            fromUnit = 'K';
+            toUnit = '°C';
+          }
+          
+          res = {
+            input: `${value} ${fromUnit}`,
+            output: `${result.toFixed(2)} ${toUnit}`,
+            msg: 'Temperature conversion'
+          };
+          break;
+        }
+
+        case 'timezone-conv': {
+          const hour = Number(inputs.hour);
+          const fromTZ = inputs.fromTZ || 'PKT';
+          const toTZ = inputs.toTZ || 'UTC';
+          if (hour < 0 || hour > 23) { alert('Enter hour 0-23'); return; }
+          
+          const tzOffsets: Record<string, number> = {
+            'PKT': 5, 'UTC': 0, 'GMT': 0, 'EST': -5, 'CST': -6, 'MST': -7, 'PST': -8,
+            'IST': 5.5, 'SGT': 8, 'HKT': 8, 'JST': 9, 'AEST': 10, 'NZDT': 13
+          };
+          
+          const offset = (tzOffsets[toTZ] || 0) - (tzOffsets[fromTZ] || 0);
+          let newHour = hour + offset;
+          if (newHour < 0) newHour += 24;
+          if (newHour >= 24) newHour -= 24;
+          
+          res = {
+            fromTime: `${String(hour).padStart(2, '0')}:00 ${fromTZ}`,
+            toTime: `${String(Math.floor(newHour)).padStart(2, '0')}:00 ${toTZ}`,
+            difference: `${offset > 0 ? '+' : ''}${offset} hours`,
+            msg: 'Time zone conversion'
+          };
+          break;
+        }
+
+        case 'power-conv': {
+          const value = Number(inputs.value);
+          const fromUnit = inputs.fromUnit || 'watts';
+          const toUnit = inputs.toUnit || 'kw';
+          if (!value || value <= 0) { alert('Enter value'); return; }
+          
+          let result = 0;
+          let desc = '';
+          
+          if (fromUnit === 'watts' && toUnit === 'kw') { result = value / 1000; desc = `W → kW`; }
+          else if (fromUnit === 'kw' && toUnit === 'watts') { result = value * 1000; desc = `kW → W`; }
+          else if (fromUnit === 'watts' && toUnit === 'hp') { result = value / 745.7; desc = `W → HP`; }
+          else if (fromUnit === 'hp' && toUnit === 'watts') { result = value * 745.7; desc = `HP → W`; }
+          else { result = value; }
+          
+          res = {
+            input: `${value} ${fromUnit}`,
+            output: `${result.toFixed(3)} ${toUnit}`,
+            conversion: desc,
+            msg: 'Power unit conversion'
+          };
+          break;
+        }
+
+        case 'number-base': {
+          const value = inputs.value;
+          const fromBase = inputs.fromBase || '10';
+          const toBase = inputs.toBase || '2';
+          
+          if (!value) { alert('Enter number'); return; }
+          
+          let decimal = 0;
+          
+          if (fromBase === '10') decimal = parseInt(value, 10);
+          else if (fromBase === '2') decimal = parseInt(value, 2);
+          else if (fromBase === '16') decimal = parseInt(value, 16);
+          else if (fromBase === '8') decimal = parseInt(value, 8);
+          
+          let result = '';
+          if (toBase === '10') result = decimal.toString();
+          else if (toBase === '2') result = decimal.toString(2);
+          else if (toBase === '16') result = decimal.toString(16).toUpperCase();
+          else if (toBase === '8') result = decimal.toString(8);
+          
+          res = {
+            input: `${value} (Base ${fromBase})`,
+            output: `${result} (Base ${toBase})`,
+            decimalValue: `Decimal: ${decimal}`,
+            msg: 'Number base conversion'
+          };
+          break;
+        }
+
+        default:
+          res = { msg: 'Conversion not available' };
+      }
+
+      setResult(res);
+    };
+
+    return (
+      <div className="space-y-4">
+        {tool.id === 'currency-conv' && (
+          <>
+            <input type="number" placeholder="Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, pkr: e.target.value })} />
+            <input type="number" placeholder="Exchange Rate (1 USD = PKR)" className="w-full border p-4 rounded-xl" defaultValue={278} onChange={e => setInputs({ ...inputs, rate: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'gold-price' && (
+          <>
+            <input type="number" placeholder="Tolas" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, tolas: e.target.value })} />
+            <input type="number" placeholder="Price per Tola (Rs.)" className="w-full border p-4 rounded-xl" defaultValue={255000} onChange={e => setInputs({ ...inputs, pricePerTola: e.target.value })} />
+          </>
+        )}
+
+        {tool.id === 'len-conv' && (
+          <>
+            <input type="number" placeholder="Value" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, fromUnit: e.target.value })} defaultValue="km">
+              <option value="km">Kilometers</option>
+              <option value="miles">Miles</option>
+              <option value="meter">Meters</option>
+              <option value="feet">Feet</option>
+              <option value="cm">Centimeters</option>
+              <option value="inches">Inches</option>
+            </select>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, toUnit: e.target.value })} defaultValue="miles">
+              <option value="miles">Miles</option>
+              <option value="km">Kilometers</option>
+              <option value="feet">Feet</option>
+              <option value="meter">Meters</option>
+              <option value="inches">Inches</option>
+              <option value="cm">Centimeters</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'weight-conv' && (
+          <>
+            <input type="number" placeholder="Value" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, fromUnit: e.target.value })} defaultValue="kg">
+              <option value="kg">Kilogram</option>
+              <option value="lbs">Pounds</option>
+              <option value="gram">Grams</option>
+              <option value="tola">Tola</option>
+            </select>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, toUnit: e.target.value })} defaultValue="lbs">
+              <option value="lbs">Pounds</option>
+              <option value="kg">Kilogram</option>
+              <option value="tola">Tola</option>
+              <option value="gram">Grams</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'area-conv' && (
+          <>
+            <input type="number" placeholder="Value" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, fromUnit: e.target.value })} defaultValue="sqft">
+              <option value="sqft">Square Feet</option>
+              <option value="sqm">Square Meters</option>
+              <option value="marla">Marla</option>
+              <option value="kanal">Kanal</option>
+            </select>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, toUnit: e.target.value })} defaultValue="sqm">
+              <option value="sqm">Square Meters</option>
+              <option value="sqft">Square Feet</option>
+              <option value="kanal">Kanal</option>
+              <option value="marla">Marla</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'volume-conv' && (
+          <>
+            <input type="number" placeholder="Value" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, fromUnit: e.target.value })} defaultValue="liter">
+              <option value="liter">Liters</option>
+              <option value="gallon">Gallons</option>
+              <option value="ml">Milliliters</option>
+            </select>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, toUnit: e.target.value })} defaultValue="gallon">
+              <option value="gallon">Gallons</option>
+              <option value="liter">Liters</option>
+              <option value="ml">Milliliters</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'speed-conv' && (
+          <>
+            <input type="number" placeholder="Value" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, fromUnit: e.target.value })} defaultValue="kmh">
+              <option value="kmh">KM/h</option>
+              <option value="mph">MPH</option>
+              <option value="mps">M/s</option>
+            </select>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, toUnit: e.target.value })} defaultValue="mph">
+              <option value="mph">MPH</option>
+              <option value="kmh">KM/h</option>
+              <option value="mps">M/s</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'temp-conv' && (
+          <>
+            <input type="number" placeholder="Temperature Value" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, type: e.target.value })} defaultValue="c2f">
+              <option value="c2f">Celsius → Fahrenheit</option>
+              <option value="f2c">Fahrenheit → Celsius</option>
+              <option value="c2k">Celsius → Kelvin</option>
+              <option value="k2c">Kelvin → Celsius</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'timezone-conv' && (
+          <>
+            <input type="number" placeholder="Hour (0-23)" className="w-full border p-4 rounded-xl" min="0" max="23" onChange={e => setInputs({ ...inputs, hour: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, fromTZ: e.target.value })} defaultValue="PKT">
+              <option value="PKT">Pakistan Time (PKT)</option>
+              <option value="UTC">UTC/GMT</option>
+              <option value="IST">India (IST)</option>
+              <option value="EST">Eastern (EST)</option>
+              <option value="PST">Pacific (PST)</option>
+              <option value="JST">Japan (JST)</option>
+            </select>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, toTZ: e.target.value })} defaultValue="UTC">
+              <option value="UTC">UTC/GMT</option>
+              <option value="PKT">Pakistan Time (PKT)</option>
+              <option value="IST">India (IST)</option>
+              <option value="EST">Eastern (EST)</option>
+              <option value="PST">Pacific (PST)</option>
+              <option value="JST">Japan (JST)</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'power-conv' && (
+          <>
+            <input type="number" placeholder="Value" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, fromUnit: e.target.value })} defaultValue="watts">
+              <option value="watts">Watts</option>
+              <option value="kw">Kilowatts</option>
+              <option value="hp">Horsepower</option>
+            </select>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, toUnit: e.target.value })} defaultValue="kw">
+              <option value="kw">Kilowatts</option>
+              <option value="watts">Watts</option>
+              <option value="hp">Horsepower</option>
+            </select>
+          </>
+        )}
+
+        {tool.id === 'number-base' && (
+          <>
+            <input type="text" placeholder="Number Value" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, fromBase: e.target.value })} defaultValue="10">
+              <option value="10">Decimal (Base 10)</option>
+              <option value="2">Binary (Base 2)</option>
+              <option value="16">Hexadecimal (Base 16)</option>
+              <option value="8">Octal (Base 8)</option>
+            </select>
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, toBase: e.target.value })} defaultValue="2">
+              <option value="2">Binary (Base 2)</option>
+              <option value="10">Decimal (Base 10)</option>
+              <option value="16">Hexadecimal (Base 16)</option>
+              <option value="8">Octal (Base 8)</option>
+            </select>
+          </>
+        )}
+
+        <button onClick={calc} className="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold hover:bg-emerald-800 transition">Convert</button>
+      </div>
+    );
+  };
+
   const renderInstructions = () => {
     const defaultSteps = ["Enter the required numerical value.", "Press the calculate/convert button.", "View the results in the box below."];
     const instructionsMap: Record<string, string[]> = {
@@ -1846,6 +2313,7 @@ const ToolDetail: React.FC = () => {
     if (tool.category === 'Identity & Personal') return <IdentityEngine />;
     if (tool.category === 'Vehicle Tools') return <VehicleEngine />;
     if (tool.category === 'Daily Life') return <DailyLifeEngine />;
+    if (tool.category === 'Conversion') return <ConversionEngine />;
 
     return (
       <div className="text-center p-8 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
