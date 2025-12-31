@@ -956,9 +956,9 @@ const ToolDetail: React.FC = () => {
       </div>
     );
   };
-+
-+  // --- ENGINE: Vehicle Tools ---
-+  const VehicleEngine = () => {
+
+  // --- ENGINE: Vehicle Tools ---
+  const VehicleEngine = () => {
 +    const [inputs, setInputs] = useState<any>({});
 +
 +    const tyreDia = (w: number, a: number, r: number) => r * 25.4 + 2 * w * (a / 100);
