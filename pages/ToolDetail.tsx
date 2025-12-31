@@ -395,6 +395,25 @@ const ToolDetail: React.FC = () => {
           break;
         }
         
+        case 'ushr-calc': {
+          const landValue = Number(inputs.landValue);
+          if (!landValue || landValue <= 0) { alert('Enter land produce value'); return; }
+          
+          // 10% (1/10) on naturally irrigated land, 5% (1/20) on artificially irrigated
+          const irrigationType = inputs.irrigation || 'natural';
+          const ushrRate = irrigationType === 'natural' ? 0.10 : 0.05;
+          const ushrAmount = landValue * ushrRate;
+          
+          res = {
+            produceValue: `Rs. ${landValue.toLocaleString()}`,
+            irrigationType: irrigationType === 'natural' ? 'Natural (Rain/River)' : 'Artificial (Tube-well)',
+            ushrRate: `${(ushrRate * 100).toFixed(0)}%`,
+            ushrDue: `Rs. ${ushrAmount.toFixed(0).toLocaleString()}`,
+            msg: 'Ushr is obligatory on agricultural produce'
+          };
+          break;
+        }
+        
         default:
           res = { msg: 'Calculation not available' };
       }
@@ -446,6 +465,16 @@ const ToolDetail: React.FC = () => {
         
         {tool.id === 'prize-bond-tax' && (
           <input type="number" placeholder="Prize Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, prize: e.target.value})} />
+        )}
+        
+        {tool.id === 'ushr-calc' && (
+          <>
+            <input type="number" placeholder="Total Produce Value (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, landValue: e.target.value})} />
+            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({...inputs, irrigation: e.target.value})} defaultValue="natural">
+              <option value="natural">Natural Irrigation (10% Ushr)</option>
+              <option value="artificial">Artificial Irrigation (5% Ushr)</option>
+            </select>
+          </>
         )}
         
         <button onClick={calc} className="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold hover:bg-emerald-800 transition shadow-lg">Calculate Tax</button>
