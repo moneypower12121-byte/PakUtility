@@ -956,6 +956,244 @@ const ToolDetail: React.FC = () => {
       </div>
     );
   };
++
++  // --- ENGINE: Vehicle Tools ---
++  const VehicleEngine = () => {
++    const [inputs, setInputs] = useState<any>({});
++
++    const tyreDia = (w: number, a: number, r: number) => r * 25.4 + 2 * w * (a / 100);
++
++    const calc = () => {
++      let res: any = {};
++
++      switch (tool.id) {
++        case 'fuel-cost': {
++          const distance = Number(inputs.distance);
++          const mileage = Number(inputs.mileage);
++          const price = Number(inputs.price) || 281;
++          if (!distance || distance <= 0 || !mileage || mileage <= 0) { alert('Enter distance and mileage'); return; }
++          const liters = distance / mileage;
++          const cost = liters * price;
++          res = {
++            distance: `${distance} km`,
++            mileage: `${mileage} km/l`,
++            fuelNeeded: `${liters.toFixed(2)} L`,
++            tripCost: `Rs. ${cost.toFixed(0).toLocaleString()}`,
++            costPerKm: `Rs. ${(cost / distance).toFixed(2)}`
++          };
++          break;
++        }
++
++        case 'petrol-price': {
++          const liters = Number(inputs.liters) || 1;
++          const petrol = Number(inputs.petrol) || 281;
++          const diesel = Number(inputs.diesel) || 289;
++          const hioct = Number(inputs.hioct) || 310;
++          res = {
++            petrol: `Rs. ${petrol} per L`,
++            diesel: `Rs. ${diesel} per L`,
++            hiOctane: `Rs. ${hioct} per L`,
++            costForLiters: `Rs. ${(liters * petrol).toFixed(0).toLocaleString()} (Petrol)`
++          };
++          break;
++        }
++
++        case 'mileage-calc': {
++          const distance = Number(inputs.distance);
++          const fuel = Number(inputs.fuel);
++          if (!distance || distance <= 0 || !fuel || fuel <= 0) { alert('Enter distance and fuel used'); return; }
++          const mileage = distance / fuel;
++          res = { distance: `${distance} km`, fuel: `${fuel} L`, mileage: `${mileage.toFixed(2)} km/l`, msg: 'Based on your trip log.' };
++          break;
++        }
++
++        case 'bike-mileage': {
++          const distance = Number(inputs.distance);
++          const fuel = Number(inputs.fuel);
++          if (!distance || distance <= 0 || !fuel || fuel <= 0) { alert('Enter distance and fuel used'); return; }
++          const mileage = distance / fuel;
++          res = { distance: `${distance} km`, fuel: `${fuel} L`, mileage: `${mileage.toFixed(2)} km/l`, msg: 'Bike mileage estimate.' };
++          break;
++        }
++
++        case 'car-duty': {
++          const value = Number(inputs.value);
++          const cc = Number(inputs.cc) || 1000;
++          if (!value || value <= 0) { alert('Enter vehicle value (CIF)'); return; }
++          let rate = 0.35;
++          if (cc <= 1000) rate = 0.35;
++          else if (cc <= 1300) rate = 0.50;
++          else if (cc <= 1600) rate = 0.60;
++          else if (cc <= 1800) rate = 0.75;
++          else rate = 0.90;
++          const duty = value * rate;
++          res = {
++            declaredValue: `Rs. ${value.toLocaleString()}`,
++            engineCC: `${cc} CC`,
++            dutyRate: `${(rate * 100).toFixed(1)}%`,
++            estimatedDuty: `Rs. ${duty.toFixed(0).toLocaleString()}`,
++            msg: 'Indicative only; use official calculator for exact duty.'
++          };
++          break;
++        }
++
++        case 'car-loan-emi': {
++          const amount = Number(inputs.amount);
++          const rate = Number(inputs.rate);
++          const years = Number(inputs.years);
++          if (!amount || amount <= 0 || !rate || rate <= 0 || !years || years <= 0) { alert('Enter amount, rate, and tenure'); return; }
++          const r = rate / 12 / 100;
++          const n = years * 12;
++          const emi = (amount * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
++          const total = emi * n;
++          res = {
++            amount: `Rs. ${amount.toLocaleString()}`,
++            emi: `Rs. ${emi.toFixed(0).toLocaleString()}`,
++            totalPayable: `Rs. ${total.toFixed(0).toLocaleString()}`,
++            interest: `Rs. ${(total - amount).toFixed(0).toLocaleString()}`,
++            msg: 'Reducing balance EMI.'
++          };
++          break;
++        }
++
++        case 'car-insure': {
++          const value = Number(inputs.value);
++          const rate = Number(inputs.rate) || 2.5;
++          if (!value || value <= 0) { alert('Enter vehicle value'); return; }
++          const premium = value * (rate / 100);
++          res = {
++            insuredValue: `Rs. ${value.toLocaleString()}`,
++            rate: `${rate}%`,
++            annualPremium: `Rs. ${premium.toFixed(0).toLocaleString()}`,
++            msg: 'Comprehensive premium estimate; varies by insurer.'
++          };
++          break;
++        }
++
++        case 'vehicle-age': {
++          const year = Number(inputs.year);
++          if (!year || year < 1950) { alert('Enter registration year'); return; }
++          const now = new Date().getFullYear();
++          const age = Math.max(0, now - year);
++          res = { registrationYear: year, ageYears: age, msg: 'Approx age; use exact date for precision.' };
++          break;
++        }
++
++        case 'tyre-size': {
++          const w1 = Number(inputs.w1), a1 = Number(inputs.a1), r1 = Number(inputs.r1);
++          const w2 = Number(inputs.w2), a2 = Number(inputs.a2), r2 = Number(inputs.r2);
++          if (!w1 || !a1 || !r1 || !w2 || !a2 || !r2) { alert('Enter both old and new tyre sizes'); return; }
++          const d1 = tyreDia(w1, a1, r1);
++          const d2 = tyreDia(w2, a2, r2);
++          const diffPct = ((d2 - d1) / d1) * 100;
++          res = {
++            oldDiameter: `${d1.toFixed(1)} mm`,
++            newDiameter: `${d2.toFixed(1)} mm`,
++            change: `${diffPct.toFixed(2)}%`,
++            msg: 'Keep diameter change within ±3% for safety/speedo accuracy.'
++          };
++          break;
++        }
++
++        case 'battery-backup': {
++          const ah = Number(inputs.ah);
++          const load = Number(inputs.load);
++          const volt = Number(inputs.volt) || 12;
++          const eff = Number(inputs.eff) || 0.85;
++          if (!ah || ah <= 0 || !load || load <= 0) { alert('Enter battery Ah and load'); return; }
++          const hours = (ah * volt * eff) / load;
++          res = {
++            battery: `${ah} Ah @ ${volt}V`,
++            load: `${load} W`,
++            backup: `${hours.toFixed(2)} hours`,
++            msg: 'Approximate; actual varies with inverter efficiency and depth-of-discharge.'
++          };
++          break;
++        }
++
++        default:
++          res = { msg: 'Calculation not available' };
++      }
++
++      setResult(res);
++    };
++
++    return (
++      <div className="space-y-4">
++        {tool.id === 'fuel-cost' && (
++          <>
++            <input type="number" placeholder="Distance (km)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, distance: e.target.value })} />
++            <input type="number" placeholder="Mileage (km/l)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, mileage: e.target.value })} />
++            <input type="number" placeholder="Fuel Price (PKR/L)" className="w-full border p-4 rounded-xl" defaultValue={281} onChange={e => setInputs({ ...inputs, price: e.target.value })} />
++          </>
++        )}
++
++        {tool.id === 'petrol-price' && (
++          <>
++            <input type="number" placeholder="Liters (for cost calc)" className="w-full border p-4 rounded-xl" defaultValue={1} onChange={e => setInputs({ ...inputs, liters: e.target.value })} />
++            <input type="number" placeholder="Petrol price per L" className="w-full border p-4 rounded-xl" defaultValue={281} onChange={e => setInputs({ ...inputs, petrol: e.target.value })} />
++            <input type="number" placeholder="Diesel price per L" className="w-full border p-4 rounded-xl" defaultValue={289} onChange={e => setInputs({ ...inputs, diesel: e.target.value })} />
++            <input type="number" placeholder="Hi-Octane price per L" className="w-full border p-4 rounded-xl" defaultValue={310} onChange={e => setInputs({ ...inputs, hioct: e.target.value })} />
++          </>
++        )}
++
++        {(tool.id === 'mileage-calc' || tool.id === 'bike-mileage') && (
++          <>
++            <input type="number" placeholder="Distance (km)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, distance: e.target.value })} />
++            <input type="number" placeholder="Fuel Used (L)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, fuel: e.target.value })} />
++          </>
++        )}
++
++        {tool.id === 'car-duty' && (
++          <>
++            <input type="number" placeholder="Vehicle Value (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
++            <input type="number" placeholder="Engine Capacity (CC)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, cc: e.target.value })} />
++          </>
++        )}
++
++        {tool.id === 'car-loan-emi' && (
++          <>
++            <input type="number" placeholder="Loan Amount (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, amount: e.target.value })} />
++            <input type="number" placeholder="Interest Rate (% p.a.)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, rate: e.target.value })} />
++            <input type="number" placeholder="Tenure (years)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, years: e.target.value })} />
++          </>
++        )}
++
++        {tool.id === 'car-insure' && (
++          <>
++            <input type="number" placeholder="Vehicle Value (PKR)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, value: e.target.value })} />
++            <input type="number" placeholder="Premium Rate (%)" className="w-full border p-4 rounded-xl" defaultValue={2.5} onChange={e => setInputs({ ...inputs, rate: e.target.value })} />
++          </>
++        )}
++
++        {tool.id === 'vehicle-age' && (
++          <input type="number" placeholder="Registration Year" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, year: e.target.value })} />
++        )}
++
++        {tool.id === 'tyre-size' && (
++          <div className="grid grid-cols-2 gap-4">
++            <input type="number" placeholder="Old Width (mm)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, w1: e.target.value })} />
++            <input type="number" placeholder="Old Aspect (%)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, a1: e.target.value })} />
++            <input type="number" placeholder="Old Rim (inch)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, r1: e.target.value })} />
++            <input type="number" placeholder="New Width (mm)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, w2: e.target.value })} />
++            <input type="number" placeholder="New Aspect (%)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, a2: e.target.value })} />
++            <input type="number" placeholder="New Rim (inch)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, r2: e.target.value })} />
++          </div>
++        )}
++
++        {tool.id === 'battery-backup' && (
++          <>
++            <input type="number" placeholder="Battery Capacity (Ah)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, ah: e.target.value })} />
++            <input type="number" placeholder="System Voltage (12/24)" className="w-full border p-4 rounded-xl" defaultValue={12} onChange={e => setInputs({ ...inputs, volt: e.target.value })} />
++            <input type="number" placeholder="Load (Watts)" className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, load: e.target.value })} />
++            <input type="number" placeholder="Efficiency (0-1)" className="w-full border p-4 rounded-xl" defaultValue={0.85} onChange={e => setInputs({ ...inputs, eff: e.target.value })} />
++          </>
++        )}
++
++        <button onClick={calc} className="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold hover:bg-emerald-800 transition">Calculate</button>
++      </div>
++    );
++  };
 
   // --- ENGINE: Tax & Finance ---
   const TaxFinanceEngine = () => {
@@ -1250,6 +1488,7 @@ const ToolDetail: React.FC = () => {
     if (tool.category === 'Islamic Tools') return <IslamicEngine />;
     if (tool.category === 'Tax & Finance') return <TaxFinanceEngine />;
     if (tool.category === 'Identity & Personal') return <IdentityEngine />;
+    if (tool.category === 'Vehicle Tools') return <VehicleEngine />;
 
     return (
       <div className="text-center p-8 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">

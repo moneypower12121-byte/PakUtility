@@ -72,7 +72,7 @@ const Home: React.FC = () => {
       <section className="mb-16">
         <div className="flex justify-between items-end mb-8">
           <h2 className="text-3xl font-bold text-gray-800">
-            {activeCategory || 'Trending'} Tools
+            {activeCategory ? activeCategory : 'Trending Tools'}
           </h2>
           <p className="text-gray-500 text-sm">{filteredTools.length} results</p>
         </div>
