@@ -204,16 +204,6 @@ const ToolDetail: React.FC = () => {
   const ConstructionEngine = () => {
     const [val1, setVal1] = useState(0);
     const [val2, setVal2] = useState(0);
-    
-    const provinceCityMap: Record<string, string[]> = {
-      sindh: ['karachi', 'hyderabad', 'sukkur', 'larkana', 'mirpurkhas', 'nawabshah', 'khairpur'],
-      punjab: ['lahore', 'rawalpindi', 'islamabad', 'faisalabad', 'multan', 'gujranwala', 'sialkot', 'bahawalpur', 'sargodha', 'rahimyar khan', 'dera ghazi khan', 'gujrat'],
-      kpk: ['peshawar', 'abbottabad', 'mardan', 'swat', 'kohat', 'dera ismail khan', 'mansehra'],
-      balochistan: ['quetta', 'gwadar', 'turbat', 'khuzdar', 'sibi'],
-      gb: ['gilgit', 'skardu', 'hunza'],
-      ajk: ['muzaffarabad', 'mirpur', 'bhimber'],
-      ict: ['islamabad']
-    };
 
     const calc = () => {
       if (tool.id === 'bricks-calc') setResult({ bricks: Math.ceil(val1 * 13.5 * (val2 || 1)), msg: "Standard 9-inch wall calculation" });
@@ -234,6 +224,16 @@ const ToolDetail: React.FC = () => {
   // --- ENGINE: Islamic Tools ---
   const IslamicEngine = () => {
     const [inputs, setInputs] = useState<any>({});
+
+    const provinceCityMap: Record<string, string[]> = {
+      sindh: ['karachi', 'hyderabad', 'sukkur', 'larkana', 'mirpurkhas', 'nawabshah', 'khairpur'],
+      punjab: ['lahore', 'rawalpindi', 'islamabad', 'faisalabad', 'multan', 'gujranwala', 'sialkot', 'bahawalpur', 'sargodha', 'rahimyar khan', 'dera ghazi khan', 'gujrat'],
+      kpk: ['peshawar', 'abbottabad', 'mardan', 'swat', 'kohat', 'dera ismail khan', 'mansehra'],
+      balochistan: ['quetta', 'gwadar', 'turbat', 'khuzdar', 'sibi'],
+      gb: ['gilgit', 'skardu', 'hunza'],
+      ajk: ['muzaffarabad', 'mirpur', 'bhimber'],
+      ict: ['islamabad']
+    };
 
     const calc = () => {
       let res: any = {};
@@ -514,7 +514,11 @@ const ToolDetail: React.FC = () => {
 
         {tool.id === 'prayer-times' && (
           <>
-            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, province: e.target.value, city: provinceCityMap[e.target.value][0] })} defaultValue="sindh">
+            <select
+              className="w-full border p-4 rounded-xl"
+              onChange={e => setInputs({ ...inputs, province: e.target.value, city: provinceCityMap[e.target.value][0] })}
+              value={inputs.province || 'sindh'}
+            >
               <option value="sindh">Sindh</option>
               <option value="punjab">Punjab</option>
               <option value="kpk">Khyber Pakhtunkhwa</option>
@@ -523,7 +527,11 @@ const ToolDetail: React.FC = () => {
               <option value="ajk">Azad Jammu & Kashmir</option>
               <option value="ict">Islamabad Capital Territory</option>
             </select>
-            <select className="w-full border p-4 rounded-xl" value={inputs.city || 'karachi'} onChange={e => setInputs({ ...inputs, city: e.target.value })}>
+            <select
+              className="w-full border p-4 rounded-xl"
+              value={inputs.city || provinceCityMap[inputs.province || 'sindh'][0]}
+              onChange={e => setInputs({ ...inputs, city: e.target.value })}
+            >
               {(provinceCityMap[inputs.province || 'sindh'] || []).map((c) => (
                 <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
               ))}
@@ -533,7 +541,11 @@ const ToolDetail: React.FC = () => {
 
         {tool.id === 'qibla-dir' && (
           <>
-            <select className="w-full border p-4 rounded-xl" onChange={e => setInputs({ ...inputs, province: e.target.value, city: provinceCityMap[e.target.value][0] })} defaultValue="sindh">
+            <select
+              className="w-full border p-4 rounded-xl"
+              onChange={e => setInputs({ ...inputs, province: e.target.value, city: provinceCityMap[e.target.value][0] })}
+              value={inputs.province || 'sindh'}
+            >
               <option value="sindh">Sindh</option>
               <option value="punjab">Punjab</option>
               <option value="kpk">Khyber Pakhtunkhwa</option>
@@ -542,7 +554,11 @@ const ToolDetail: React.FC = () => {
               <option value="ajk">Azad Jammu & Kashmir</option>
               <option value="ict">Islamabad Capital Territory</option>
             </select>
-            <select className="w-full border p-4 rounded-xl" value={inputs.city || 'karachi'} onChange={e => setInputs({ ...inputs, city: e.target.value })}>
+            <select
+              className="w-full border p-4 rounded-xl"
+              value={inputs.city || provinceCityMap[inputs.province || 'sindh'][0]}
+              onChange={e => setInputs({ ...inputs, city: e.target.value })}
+            >
               {(provinceCityMap[inputs.province || 'sindh'] || []).map((c) => (
                 <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
               ))}
