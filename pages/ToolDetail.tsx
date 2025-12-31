@@ -318,8 +318,17 @@ const ToolDetail: React.FC = () => {
             karachi: { fajr: '05:30', dhuhr: '12:30', asr: '04:00', maghrib: '06:00', isha: '07:30' },
             lahore: { fajr: '05:15', dhuhr: '12:15', asr: '03:45', maghrib: '05:45', isha: '07:15' },
             islamabad: { fajr: '05:10', dhuhr: '12:20', asr: '03:50', maghrib: '05:55', isha: '07:25' },
+            rawalpindi: { fajr: '05:10', dhuhr: '12:20', asr: '03:50', maghrib: '05:55', isha: '07:25' },
             peshawar: { fajr: '05:05', dhuhr: '12:25', asr: '04:00', maghrib: '06:05', isha: '07:35' },
-            quetta: { fajr: '05:20', dhuhr: '12:40', asr: '04:10', maghrib: '06:10', isha: '07:40' }
+            quetta: { fajr: '05:20', dhuhr: '12:40', asr: '04:10', maghrib: '06:10', isha: '07:40' },
+            multan: { fajr: '05:20', dhuhr: '12:25', asr: '03:55', maghrib: '06:00', isha: '07:30' },
+            faisalabad: { fajr: '05:15', dhuhr: '12:20', asr: '03:50', maghrib: '05:50', isha: '07:20' },
+            hyderabad: { fajr: '05:25', dhuhr: '12:30', asr: '04:00', maghrib: '06:05', isha: '07:35' },
+            sialkot: { fajr: '05:10', dhuhr: '12:15', asr: '03:45', maghrib: '05:50', isha: '07:20' },
+            gujranwala: { fajr: '05:12', dhuhr: '12:18', asr: '03:48', maghrib: '05:52', isha: '07:22' },
+            sukkur: { fajr: '05:25', dhuhr: '12:35', asr: '04:05', maghrib: '06:10', isha: '07:40' },
+            bahawalpur: { fajr: '05:20', dhuhr: '12:28', asr: '03:58', maghrib: '06:03', isha: '07:33' },
+            abbottabad: { fajr: '05:05', dhuhr: '12:22', asr: '03:55', maghrib: '06:05', isha: '07:32' }
           };
           const timings = table[city];
           res = {
@@ -340,8 +349,17 @@ const ToolDetail: React.FC = () => {
             karachi: { deg: 259, note: 'West-Northwest' },
             lahore: { deg: 254, note: 'West' },
             islamabad: { deg: 253, note: 'West' },
+            rawalpindi: { deg: 253, note: 'West' },
             peshawar: { deg: 251, note: 'West-Southwest' },
-            quetta: { deg: 255, note: 'West' }
+            quetta: { deg: 255, note: 'West' },
+            multan: { deg: 256, note: 'West' },
+            faisalabad: { deg: 254, note: 'West' },
+            hyderabad: { deg: 258, note: 'West-Northwest' },
+            sialkot: { deg: 253, note: 'West' },
+            gujranwala: { deg: 253, note: 'West' },
+            sukkur: { deg: 258, note: 'West-Northwest' },
+            bahawalpur: { deg: 256, note: 'West' },
+            abbottabad: { deg: 252, note: 'West' }
           };
           const dir = directions[city];
           res = {
@@ -447,8 +465,17 @@ const ToolDetail: React.FC = () => {
             <option value="karachi">Karachi</option>
             <option value="lahore">Lahore</option>
             <option value="islamabad">Islamabad</option>
+            <option value="rawalpindi">Rawalpindi</option>
             <option value="peshawar">Peshawar</option>
             <option value="quetta">Quetta</option>
+            <option value="multan">Multan</option>
+            <option value="faisalabad">Faisalabad</option>
+            <option value="hyderabad">Hyderabad</option>
+            <option value="sialkot">Sialkot</option>
+            <option value="gujranwala">Gujranwala</option>
+            <option value="sukkur">Sukkur</option>
+            <option value="bahawalpur">Bahawalpur</option>
+            <option value="abbottabad">Abbottabad</option>
           </select>
         )}
 
@@ -457,8 +484,17 @@ const ToolDetail: React.FC = () => {
             <option value="karachi">Karachi</option>
             <option value="lahore">Lahore</option>
             <option value="islamabad">Islamabad</option>
+            <option value="rawalpindi">Rawalpindi</option>
             <option value="peshawar">Peshawar</option>
             <option value="quetta">Quetta</option>
+            <option value="multan">Multan</option>
+            <option value="faisalabad">Faisalabad</option>
+            <option value="hyderabad">Hyderabad</option>
+            <option value="sialkot">Sialkot</option>
+            <option value="gujranwala">Gujranwala</option>
+            <option value="sukkur">Sukkur</option>
+            <option value="bahawalpur">Bahawalpur</option>
+            <option value="abbottabad">Abbottabad</option>
           </select>
         )}
 
