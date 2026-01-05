@@ -8,7 +8,12 @@ const Header: React.FC = () => {
     <header className="bg-emerald-700 text-white sticky top-0 z-50 shadow-md">
       <div className="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
         <Link to="/" className="flex items-center" aria-label="PakUtility Home">
-          <img src={Logo} alt="PakUtility Logo" className="w-12 h-12 rounded shadow bg-white object-contain" />
+          <img 
+            src={Logo} 
+            alt="PakUtility Logo" 
+            className="h-14 w-auto max-h-16 p-1 bg-white rounded shadow object-contain"
+            style={{ maxWidth: '120px', minWidth: '48px' }}
+          />
         </Link>
         <nav className="hidden md:flex space-x-6 font-medium">
           <Link to="/" className="hover:text-emerald-200 transition">Home</Link>
