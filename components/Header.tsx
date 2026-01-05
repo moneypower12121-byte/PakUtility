@@ -11,8 +11,8 @@ const Header: React.FC = () => {
           <img 
             src={Logo} 
             alt="PakUtility Logo" 
-            className="h-18 w-auto max-h-19 p-2 bg-white rounded-xl shadow-lg object-contain border-2 border-emerald-200"
-            style={{ maxWidth: '180px', minWidth: '74px' }}
+            className="h-20 w-auto max-h-24 p-2 bg-white rounded-xl shadow-lg object-contain border-2 border-emerald-200"
+            style={{ maxWidth: '240px', minWidth: '100px' }}
           />
         </Link>
         <nav className="hidden md:flex space-x-6 font-medium">
