@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
     <footer className="bg-gray-900 text-gray-300 pt-12 pb-8 border-t border-gray-800">
       <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
-          <h3 className="text-white text-xl font-bold mb-4">PakUtilityTools</h3>
+          <h3 className="text-white text-xl font-bold mb-4">PakUtility</h3>
           <p className="text-sm leading-relaxed mb-4">
             Smart online utility calculators and estimators for Pakistan. We make complex calculations simple.
           </p>
@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
       <div className="container mx-auto px-4 mt-12 pt-8 border-t border-gray-800 text-center text-xs">
-        <p>© {new Date().getFullYear()} PakUtilityTools.xyz - All Rights Reserved.</p>
+        <p>© {new Date().getFullYear()} PakUtility.xyz - All Rights Reserved.</p>
         <p className="mt-2 text-gray-500 italic">Not affiliated with any government department.</p>
       </div>
     </footer>

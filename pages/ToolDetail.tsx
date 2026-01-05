@@ -16,7 +16,7 @@ const ToolDetail: React.FC = () => {
   const [result, setResult] = useState<any>(null);
 
   useEffect(() => {
-    if (tool) document.title = `${tool.name} - PakUtilityTools`;
+    if (tool) document.title = `${tool.name} - PakUtility`;
     setResult(null); 
   }, [tool]);
 

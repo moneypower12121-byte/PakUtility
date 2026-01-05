@@ -146,4 +146,4 @@ export const SALARY_TAX_SLABS_2024: TaxSlab[] = [
 
 export const ELECTRICITY_COMPANIES = ['LESCO', 'IESCO', 'KE', 'MEPCO', 'PESCO', 'FESCO', 'GEPCO', 'QESCO', 'SEPCO', 'TESCO'];
 
-export const DISCLAIMER_TEXT = "PakUtilityTools provides estimates for informational purposes only. We do not access NADRA, PTA, FBR, or any government database.";
+export const DISCLAIMER_TEXT = "PakUtility provides estimates for informational purposes only. We do not access NADRA, PTA, FBR, or any government database.";
