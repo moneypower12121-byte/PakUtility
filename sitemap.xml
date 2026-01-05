@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://pakutility.xyz/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://pakutility.xyz/electricity-bill-calculator-pakistan</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pakutility.xyz/salary-tax-calculator-pakistan</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pakutility.xyz/zakat-calculator-pakistan</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pakutility.xyz/about-us</loc>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://pakutility.xyz/contact-us</loc>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://pakutility.xyz/privacy-policy</loc>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://pakutility.xyz/disclaimer</loc>
+    <priority>0.5</priority>
+  </url>
+  <!-- Add more URLs for popular tools as needed -->
+</urlset>
