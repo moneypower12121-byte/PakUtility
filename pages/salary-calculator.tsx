@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
+import Head from 'next/head';
 import AdPlaceholder from '../components/AdPlaceholder';
 import { SALARY_TAX_SLABS_2024, DISCLAIMER_TEXT } from '../constants';
 
-const SalaryTax: React.FC = () => {
+const SalaryCalculator: React.FC = () => {
   const [monthlySalary, setMonthlySalary] = useState<number>(0);
   const [result, setResult] = useState<any | null>(null);
 
@@ -35,7 +36,12 @@ const SalaryTax: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">Salary Tax Calculator (FBR)</h1>
+      <Head>
+        <title>Pakistan Salary Tax Calculator 2025 | PakUtility</title>
+        <meta name="description" content="Calculate your monthly and annual take-home salary after FBR tax deductions according to the latest 2024-2025 budget in Pakistan. Fast & accurate." />
+      </Head>
+
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">Pakistan Salary Tax Calculator 2025</h1>
       <p className="text-gray-600 mb-8">Updated income tax estimator for Tax Year 2024-2025 in Pakistan.</p>
 
       <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
@@ -91,4 +97,4 @@ const SalaryTax: React.FC = () => {
   );
 };
 
-export default SalaryTax;
+export default SalaryCalculator;

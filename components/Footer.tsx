@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 const Footer: React.FC = () => {
   return (
@@ -20,19 +20,19 @@ const Footer: React.FC = () => {
         <div>
           <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Top Tools</h4>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/electricity-bill-calculator-pakistan" className="hover:text-emerald-400">Electricity Estimator</Link></li>
-            <li><Link to="/salary-tax-calculator-pakistan" className="hover:text-emerald-400">Salary Tax Calc</Link></li>
-            <li><Link to="/zakat-calculator-pakistan" className="hover:text-emerald-400">Zakat Calculator</Link></li>
-            <li><Link to="/cnic-format-checker" className="hover:text-emerald-400">CNIC Validator</Link></li>
+            <li><Link href="/electricity-bill-calculator-pakistan" className="hover:text-emerald-400">Electricity Estimator</Link></li>
+            <li><Link href="/salary-tax-calculator-pakistan" className="hover:text-emerald-400">Salary Tax Calc</Link></li>
+            <li><Link href="/zakat-calculator-pakistan" className="hover:text-emerald-400">Zakat Calculator</Link></li>
+            <li><Link href="/cnic-format-checker" className="hover:text-emerald-400">CNIC Validator</Link></li>
           </ul>
         </div>
         <div>
           <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Quick Links</h4>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/about-us" className="hover:text-emerald-400">About Us</Link></li>
-            <li><Link to="/contact-us" className="hover:text-emerald-400">Contact Us</Link></li>
-            <li><Link to="/disclaimer" className="hover:text-emerald-400">Disclaimer</Link></li>
-            <li><Link to="/privacy-policy" className="hover:text-emerald-400">Privacy Policy</Link></li>
+            <li><Link href="/about-us" className="hover:text-emerald-400">About Us</Link></li>
+            <li><Link href="/contact-us" className="hover:text-emerald-400">Contact Us</Link></li>
+            <li><Link href="/disclaimer" className="hover:text-emerald-400">Disclaimer</Link></li>
+            <li><Link href="/privacy-policy" className="hover:text-emerald-400">Privacy Policy</Link></li>
           </ul>
         </div>
         <div>

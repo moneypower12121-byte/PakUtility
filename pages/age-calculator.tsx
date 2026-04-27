@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import Head from 'next/head';
 import AdPlaceholder from '../components/AdPlaceholder';
 import { DISCLAIMER_TEXT } from '../constants';
 
@@ -61,13 +62,17 @@ const AgeCalculator: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto">
+      <Head>
+        <title>Age Calculator Pakistan | Exact Age in Years, Months, Days | PakUtility</title>
+        <meta name="description" content="Calculate your exact age in years, months, and days with our free online Age Calculator for Pakistan. Perfect for documents, job applications, and birthdate tracking." />
+      </Head>
+
       <h1 className="text-3xl font-bold text-gray-800 mb-2">Age Calculator Pakistan</h1>
       <p className="text-gray-600 mb-8">Calculate your exact age in years, months, days, and more with precision.</p>
       
       <AdPlaceholder slot="above-tool" />
 
       <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        {/* How to Use Section */}
         <div className="mb-8 p-5 bg-blue-50 rounded-xl border border-blue-100">
           <h3 className="text-lg font-bold text-blue-900 mb-3 flex items-center">
             📖 How to Use This Calculator

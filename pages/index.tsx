@@ -1,6 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
+import Head from 'next/head';
 import { TOOLS } from '../constants';
 import SEOContent from '../components/SEOContent';
 import AdPlaceholder from '../components/AdPlaceholder';
@@ -22,6 +23,11 @@ const Home: React.FC = () => {
 
   return (
     <div>
+      <Head>
+        <title>PakUtility - Smart Online Utility Calculators for Pakistan</title>
+        <meta name="description" content="Calculate electricity bills, salary tax (FBR), Zakat, and verify CNIC formats with PakUtility. The fastest utility tool suite for Pakistan." />
+      </Head>
+
       {/* Hero Section */}
       <section className="bg-emerald-700 -mt-8 -mx-4 px-4 py-16 text-center text-white mb-12 shadow-inner">
         <div className="max-w-4xl mx-auto">
@@ -82,7 +88,7 @@ const Home: React.FC = () => {
             filteredTools.map(tool => (
               <Link 
                 key={tool.id} 
-                to={`/${tool.slug}`} 
+                href={`/${tool.slug}`} 
                 className="group bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:border-emerald-500 hover:shadow-xl transition-all duration-300 flex flex-col h-full"
               >
                 <div className="text-4xl mb-4 bg-emerald-50 w-16 h-16 flex items-center justify-center rounded-2xl group-hover:bg-emerald-100 transition">

@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
+import Head from 'next/head';
 import AdPlaceholder from '../components/AdPlaceholder';
 
-const ZakatCalc: React.FC = () => {
+const ZakatCalculator: React.FC = () => {
   const [inputs, setInputs] = useState({
     cash: 0,
     gold: 0,
@@ -26,6 +27,11 @@ const ZakatCalc: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto">
+      <Head>
+        <title>Zakat Calculator Pakistan | Online Shariah Compliant | PakUtility</title>
+        <meta name="description" content="Calculate your Zakat accurately based on Shariah principles (2.5% rate) with our online Zakat Calculator for Pakistan. Updated Nisab values included." />
+      </Head>
+
       <h1 className="text-3xl font-bold text-gray-800 mb-2">Zakat Calculator Pakistan</h1>
       <p className="text-gray-600 mb-8">Calculate your Zakat accurately based on Shariah principles (2.5% rate).</p>
 
@@ -98,4 +104,4 @@ const ZakatCalc: React.FC = () => {
   );
 };
 
-export default ZakatCalc;
+export default ZakatCalculator;

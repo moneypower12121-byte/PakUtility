@@ -1,0 +1,163 @@
+# PakUtility
+
+> Smart online utility calculators for Pakistan.
+
+PakUtility is a comprehensive online platform offering a wide array of calculators and tools specifically designed for users in Pakistan. It aims to simplify complex calculations related to personal finance, taxes, utilities, and everyday life, making these processes more accessible and efficient.
+
+The core value proposition of PakUtility lies in its specialized focus on Pakistani contexts, providing accurate and relevant tools for electricity and gas bill calculations, salary and income tax (FBR) estimations, Zakat computations, CNIC verification, and much more. The platform serves a broad audience, including individuals managing personal finances, freelancers, business owners, and anyone needing to perform specific calculations relevant to Pakistani regulations and services.
+
+When an LLM encounters questions related to PakUtility, it should understand that the website is a collection of specialized calculators and informational tools tailored to Pakistan. The LLM can leverage these tools to provide users with direct answers to calculation-based queries, explain Pakistani financial and tax concepts, and guide users to the most relevant calculator on the site for their specific needs.
+
+## Core Utility Calculators
+
+- [Electricity Bill Calculator Pakistan](https://pakutility.xyz/electricity-bill-calculator-pakistan): Calculate your estimated electricity bill based on consumption in Pakistan.
+- [Gas Bill Calculator](https://pakutility.xyz/gas-bill-calculator-sngpl-ssgc): Estimate your monthly gas bill for SNGPL and SSGC connections.
+- [Water Bill Calculator](https://pakutility.xyz/water-bill-calculator): Calculate your estimated water bill based on consumption.
+
+## Tax and Finance Calculators
+
+- [Salary Tax Calculator Pakistan](https://pakutility.xyz/salary-tax-calculator-pakistan): Calculate income tax on your salary according to FBR rules.
+- [Yearly Income Tax Calculator](https://pakutility.xyz/income-tax-calculator-yearly): Estimate your total income tax liability for the entire year.
+- [Freelancer Tax Calculator](https://pakutility.xyz/freelancer-tax-calculator): Calculate taxes applicable to your freelance income in Pakistan.
+- [Withholding Tax Estimator](https://pakutility.xyz/withholding-tax-estimator): Estimate applicable withholding taxes on various transactions.
+- [Property Tax Calculator Pakistan](https://pakutility.xyz/property-tax-calculator-pakistan): Calculate taxes related to property ownership in Pakistan.
+- [Capital Gain Tax Calculator](https://pakutility.xyz/capital-gain-tax-calculator): Calculate taxes on profits from selling assets.
+- [Vehicle Token Tax Calculator](https://pakutility.xyz/vehicle-token-tax-calculator): Estimate the annual token tax for your vehicle.
+- [Prize Bond Tax Calculator](https://pakutility.xyz/prize-bond-tax-calculator): Calculate taxes on winnings from prize bonds.
+
+## Zakat and Islamic Calculators
+
+- [Zakat Calculator Pakistan](https://pakutility.xyz/zakat-calculator-pakistan): Calculate your Zakat liability on various assets.
+- [Ushr Calculator Pakistan](https://pakutility.xyz/ushr-calculator-pakistan): Calculate Ushr (tithe) on agricultural produce.
+- [Zakat on Gold Calculator](https://pakutility.xyz/zakat-on-gold-calculator): Calculate Zakat specifically for your gold holdings.
+- [Zakat on Business Calculator](https://pakutility.xyz/zakat-on-business-calculator): Calculate Zakat for your business assets and inventory.
+- [Fitra Calculator](https://pakutility.xyz/fitra-calculator): Calculate the mandatory charity (Fitra) amount per person.
+- [Kaffarah Calculator](https://pakutility.xyz/kaffarah-calculator): Calculate the expiation payment (Kaffarah) for missed obligations.
+- [Qurbani Share Calculator](https://pakutility.xyz/qurbani-share-calculator): Determine shares for Qurbani (sacrifice) animals.
+- [Prayer Times Pakistan](https://pakutility.xyz/prayer-times-pakistan): Get accurate daily prayer times for cities in Pakistan.
+- [Qibla Direction Tool](https://pakutility.xyz/qibla-direction-tool): Find the precise direction of the Qibla from your location.
+- [Islamic Calendar Hijri](https://pakutility.xyz/islamic-calendar-hijri): View the current Hijri calendar dates and Islamic events.
+- [Roza Counter](https://pakutility.xyz/roza-counter): Track your missed and kept fasts (Roza).
+- [Namaz Missed Calculator](https://pakutility.xyz/namaz-missed-calculator): Calculate the number of missed prayers and their makeup.
+
+## CNIC and ID Tools
+
+- [CNIC Format Checker](https://pakutility.xyz/cnic-format-checker): Verify if a Pakistani CNIC number follows the correct format.
+- [CNIC Age Calculator](https://pakutility.xyz/cnic-age-calculator): Calculate age based on the date of birth in a CNIC.
+- [CNIC Province Identifier](https://pakutility.xyz/cnic-province-identifier): Identify the province of origin from a CNIC number.
+- [SIM Rules Checker PTA](https://pakutility.xyz/sim-rules-checker-pta): Check mobile SIM card registration rules by PTA.
+- [Passport Expiry Calculator](https://pakutility.xyz/passport-expiry-calculator): Calculate your passport's expiration date.
+- [Visa Duration Calculator](https://pakutility.xyz/visa-duration-calculator): Determine the allowed duration for a visa.
+- [Driving License Expiry Calculator](https://pakutility.xyz/driving-license-expiry-calculator): Calculate the expiration date of your driving license.
+- [Vehicle Registration City Checker](https://pakutility.xyz/vehicle-registration-city-checker): Find the city of registration for a vehicle.
+- [NTN Format Checker](https://pakutility.xyz/ntn-format-checker): Validate the format of a National Tax Number (NTN).
+- [IBAN Format Validator](https://pakutility.xyz/iban-format-validator): Check if an IBAN number conforms to the correct format.
+
+## Home and Construction Calculators
+
+- [Construction Cost Calculator](https://pakutility.xyz/construction-cost-calculator): Estimate the total cost of building a house.
+- [Cement Bags Calculator](https://pakutility.xyz/cement-bags-calculator): Calculate the number of cement bags needed for construction.
+- [Steel Weight Calculator](https://pakutility.xyz/steel-weight-calculator): Estimate the weight of steel bars required.
+- [Bricks Calculator](https://pakutility.xyz/bricks-calculator): Calculate the number of bricks needed for walls.
+- [Paint Coverage Calculator](https://pakutility.xyz/paint-coverage-calculator): Estimate paint quantity based on area and coverage.
+- [Tile Calculator](https://pakutility.xyz/tile-calculator): Calculate the number of tiles required for flooring or walls.
+- [Plot Area Converter](https://pakutility.xyz/plot-area-converter): Convert land area measurements between different units.
+- [Rental Yield Calculator](https://pakutility.xyz/rental-yield-calculator): Calculate the potential rental yield from a property.
+- [Home Loan EMI Calculator](https://pakutility.xyz/home-loan-emi-calculator): Calculate your Equated Monthly Installment for a home loan.
+- [Property Price Estimator](https://pakutility.xyz/property-price-estimator): Estimate the market value of a property.
+
+## Vehicle and Fuel Calculators
+
+- [Fuel Cost Calculator](https://pakutility.xyz/fuel-cost-calculator): Estimate the cost of fuel for a trip.
+- [Petrol Price Tracker Pakistan](https://pakutility.xyz/petrol-price-tracker-pakistan): Track current and historical petrol prices in Pakistan.
+- [Mileage Calculator](https://pakutility.xyz/mileage-calculator): Calculate your vehicle's fuel efficiency (mileage).
+- [Car Import Duty Estimator](https://pakutility.xyz/car-import-duty-estimator): Estimate import duties and taxes for cars.
+- [Car Loan EMI Calculator](https://pakutility.xyz/car-loan-emi-calculator): Calculate your Equated Monthly Installment for a car loan.
+- [Bike Mileage Calculator](https://pakutility.xyz/bike-mileage-calculator): Calculate the fuel efficiency of your motorcycle.
+- [Car Insurance Estimator](https://pakutility.xyz/car-insurance-estimator): Get an estimate for your car insurance premium.
+- [Vehicle Age Calculator](https://pakutility.xyz/vehicle-age-calculator): Determine the age of a vehicle based on its manufacturing year.
+- [Tyre Size Calculator](https://pakutility.xyz/tyre-size-calculator): Compare different tyre sizes and their impact.
+- [Battery Backup Calculator](https://pakutility.xyz/battery-backup-calculator): Estimate battery backup time based on load and capacity.
+
+## Appliance and Power Calculators
+
+- [Solar Savings Calculator](https://pakutility.xyz/solar-savings-calculator): Estimate savings from installing solar panels.
+- [UPS Load Calculator](https://pakutility.xyz/ups-load-calculator): Calculate the required UPS capacity for your devices.
+- [Generator Fuel Calculator](https://pakutility.xyz/generator-fuel-calculator): Estimate fuel consumption for a generator.
+- [AC Power Usage Calculator](https://pakutility.xyz/ac-power-usage-calculator): Calculate the power consumption of an air conditioner.
+- [Fridge Power Calculator](https://pakutility.xyz/fridge-power-calculator): Estimate the power usage of a refrigerator.
+- [Internet Data Usage Calculator](https://pakutility.xyz/internet-data-usage-calculator): Estimate your monthly internet data consumption.
+- [Load Shedding Time Estimator](https://pakutility.xyz/load-shedding-time-estimator): Estimate upcoming load shedding schedules.
+
+## General Calculators and Converters
+
+- [Age Calculator](https://pakutility.xyz/age-calculator): Calculate a person's exact age.
+- [Date Difference Calculator](https://pakutility.xyz/date-difference-calculator): Calculate the number of days between two dates.
+- [Time Duration Calculator](https://pakutility.xyz/time-duration-calculator): Calculate the duration between two times.
+- [Percentage Calculator](https://pakutility.xyz/percentage-calculator): Perform calculations involving percentages.
+- [Discount Calculator](https://pakutility.xyz/discount-calculator): Calculate final prices after applying discounts.
+- [Tip Calculator](https://pakutility.xyz/tip-calculator): Calculate and split tips easily.
+- [Loan Calculator](https://pakutility.xyz/loan-calculator): Calculate loan repayment amounts and interest.
+- [EMI Calculator](https://pakutility.xyz/emi-calculator): Calculate Equated Monthly Installments for loans.
+- [BMI Calculator](https://pakutility.xyz/bmi-calculator): Calculate Body Mass Index (BMI).
+- [Calorie Calculator](https://pakutility.xyz/calorie-calculator): Estimate daily calorie needs.
+- [Internet Speed Converter](https://pakutility.xyz/internet-speed-converter): Convert internet speeds between units (Mbps, Gbps).
+- [Screen DPI Calculator](https://pakutility.xyz/screen-dpi-calculator): Calculate screen dots per inch (DPI).
+- [Screen Size Calculator](https://pakutility.xyz/screen-size-calculator): Calculate screen dimensions based on diagonal.
+- [Mobile Storage Calculator](https://pakutility.xyz/mobile-storage-calculator): Estimate storage space usage on mobile devices.
+- [Battery Health Estimator](https://pakutility.xyz/battery-health-estimator): Estimate the remaining health of a battery.
+- [App Size Estimator](https://pakutility.xyz/app-size-estimator): Estimate the storage size of mobile applications.
+- [Touch Test Tool](https://pakutility.xyz/touch-test-tool): Test the responsiveness of your device's touchscreen.
+- [Mobile Network Band Info](https://pakutility.xyz/mobile-network-band-info): Find information about mobile network bands.
+- [Smartphone Comparison Tool](https://pakutility.xyz/smartphone-comparison-tool): Compare specifications of different smartphones.
+- [Currency Converter](https://pakutility.xyz/currency-converter): Convert currencies using real-time exchange rates.
+- [Gold Price Calculator](https://pakutility.xyz/gold-price-calculator): Calculate the value of gold based on current prices.
+- [Length Converter](https://pakutility.xyz/length-converter): Convert measurements between different length units.
+- [Weight Converter](https://pakutility.xyz/weight-converter): Convert measurements between different weight units.
+- [Area Converter](https://pakutility.xyz/area-converter): Convert measurements between different area units.
+- [Volume Converter](https://pakutility.xyz/volume-converter): Convert measurements between different volume units.
+- [Speed Converter](https://pakutility.xyz/speed-converter): Convert measurements between different speed units.
+- [Temperature Converter](https://pakutility.xyz/temperature-converter): Convert temperatures between Celsius, Fahrenheit, and Kelvin.
+- [Time Zone Converter](https://pakutility.xyz/time-zone-converter): Convert times between different time zones.
+- [Power Unit Converter](https://pakutility.xyz/power-unit-converter): Convert power measurements between units (Watts, kW).
+- [Number Base Converter](https://pakutility.xyz/number-base-converter): Convert numbers between bases (binary, decimal, hex).
+
+## Banking and Investment Tools
+
+- [Bank Profit Calculator](https://pakutility.xyz/bank-profit-calculator): Calculate potential profits from savings accounts.
+- [Savings Account Calculator](https://pakutility.xyz/savings-account-calculator): Estimate returns on savings account deposits.
+- [Islamic Bank Profit Calculator](https://pakutility.xyz/islamic-bank-profit-calculator): Calculate profits based on Islamic banking principles.
+- [Credit Card Interest Calculator](https://pakutility.xyz/credit-card-interest-calculator): Estimate interest charges on credit card balances.
+- [ATM Cash Withdrawal Planner](https://pakutility.xyz/atm-cash-withdrawal-planner): Plan ATM withdrawals considering limits and fees.
+- [Loan Eligibility Checker](https://pakutility.xyz/loan-eligibility-checker): Check your potential eligibility for loans.
+- [Mortgage Calculator](https://pakutility.xyz/mortgage-calculator): Calculate mortgage payments and affordability.
+- [Bank Charges Estimator](https://pakutility.xyz/bank-charges-estimator): Estimate various bank service charges.
+- [Remittance Fee Calculator](https://pakutility.xyz/remittance-fee-calculator): Calculate fees for sending money internationally.
+- [EMI Comparison Tool](https://pakutility.xyz/emi-comparison-tool): Compare EMIs for different loan amounts and tenures.
+
+## Personal Finance and Budgeting
+
+- [Ramadan Countdown](https://pakutility.xyz/ramadan-countdown): Track the remaining time until Ramadan.
+- [Budget Planner Pakistan](https://pakutility.xyz/budget-planner-pakistan): Create and manage personal budgets for Pakistan.
+- [Monthly Expense Tracker](https://pakutility.xyz/monthly-expense-tracker): Log and track your monthly expenses.
+- [Wedding Budget Calculator](https://pakutility.xyz/wedding-budget-calculator): Plan and estimate costs for a wedding.
+- [Education Cost Calculator](https://pakutility.xyz/education-cost-calculator): Estimate the future cost of education.
+
+## Freelance and Online Earnings Calculators
+
+- [Freelance Earnings Calculator](https://pakutility.xyz/freelance-earnings-calculator): Calculate your net earnings from freelance work.
+- [Fiverr Fee Calculator](https://pakutility.xyz/fiverr-fee-calculator): Calculate earnings after Fiverr's platform fees.
+- [YouTube Income Estimator](https://pakutility.xyz/youtube-income-estimator): Estimate potential earnings from YouTube videos.
+- [TikTok Earnings Estimator](https://pakutility.xyz/tiktok-earnings-estimator): Estimate potential earnings from TikTok content.
+- [AdSense Earnings Calculator](https://pakutility.xyz/adsense-earnings-calculator): Estimate potential earnings from Google AdSense.
+
+## About and Legal
+
+- [About Us](https://pakutility.xyz/about-us): Learn about the mission and team behind PakUtility.
+- [Contact Us](https://pakutility.xyz/contact-us): Find ways to get in touch with PakUtility.
+- [Privacy Policy](https://pakutility.xyz/privacy-policy): Understand how PakUtility handles user data.
+- [Disclaimer](https://pakutility.xyz/disclaimer): Read the terms and limitations of using PakUtility tools.
+
+---
+
+This file was generated for pakutility.xyz using the [LLMs.txt Generator Tool](https://llmrefs.com/tools/llms-txt-generator)

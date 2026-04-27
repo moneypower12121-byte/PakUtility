@@ -1,3 +1,9 @@
 User-agent: *
 Allow: /
+
+# Sitemaps
 Sitemap: https://pakutility.xyz/sitemap.xml
+
+# Block AI crawlers (Optional, based on user preference)
+# User-agent: GPTBot
+# Disallow: /
